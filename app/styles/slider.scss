@@ -1,0 +1,29 @@
+input[type=range][orient=vertical]
+{
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    padding: 0 5px;
+}
+
+input[type='range'].slider {
+  width: 150px;
+  -webkit-appearance: none;
+  height: 3px;
+  padding: 0px;
+  outline: 0;
+  left: 10px;
+  &:focus {
+    outline:0;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    width: 25px; height: 25px;
+    border-radius: 3px;
+    background: 
+      linear-gradient(90deg, 
+        rgba(#c9c9c9, 0) 15%, #c9c9c9 37.5%, #f4f4f4 37.5%,  
+        #f4f4f4 62.5%, #c9c9c9 62.5%, rgba(#c9c9c9, 0) 85%)
+      #fefefe;
+  }
+}

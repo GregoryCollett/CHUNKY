@@ -1,0 +1,171 @@
+$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+
+@import "_variables";
+@import "bootstrap-sass-official/assets/stylesheets/bootstrap.scss";
+@import "module";
+@import "oscillator";
+@import "knob";
+@import "slider";
+
+html, body {
+  background-color: #252A32;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow:hidden;
+  color: #737489;
+  font-family: monospace;
+  font-size: 12px;
+}
+canvas {
+  //border-radius: 6px 6px 0 0;
+}
+
+.intro {
+  position: absolute;
+  width: 250px;
+  padding: 15px;
+  top: 10px;
+  text-align: center;
+  &.right {
+    right:0;
+  }
+  h1 {
+    margin: 0;
+    font-size: 3.5em;
+  }
+}
+.tabable {
+  .controls {
+    margin-top:5px !important;
+    padding: 5px 5px !important;
+  }
+}
+  ul.nav-tabs {
+    width: 100%;
+    float:left;
+    list-style: none;
+    padding:0;
+    margin: 0;
+    border-bottom: none;
+    li {
+      float: left;
+      margin-right: 2px;
+      border-radius: 2px;
+      background-color: transparent;
+      > a {
+        padding: 2px 10px;
+      }
+      &.env {
+        border: 1px solid #114E8B;
+        color: #3D7CBE;
+        &.active {
+          background: rgba(17, 78, 139, 0.5);
+        }
+      }
+      &.lfo {
+        border: 1px solid #1F6C00;
+        color: #28B21B;
+        &.active {
+          background: rgba(31, 108, 0, 0.5);
+        }
+      }
+      a, a:hover, &.active > a, &.active > a:hover {
+        color: inherit !important;
+        padding: 2px 10px !important;
+        background-color:transparent !important;
+        border:0 !important;
+      }
+    }
+  }
+  .tab {
+    display: -webkit-inline-box;
+    width:100%;
+    .params {
+      width: 100%;
+    }
+    
+  }
+.chunky {
+  margin: 10px auto 0;
+  border: 7px solid black;
+  box-sizing: border-box;
+  max-width: 60%;
+  height: 80%;
+  overflow: hidden;
+  border-radius: 10px;
+  display:flex;
+  flex-direction: row;
+  p {
+    padding: 0;
+  }
+  .spacer {
+    display: block;
+    height: 3px;
+    background: #A7B0BB;
+    border-top: 1px solid #777E86;
+    border-bottom: 1px solid #DDE3EB;
+  }
+  .spacer-vertical {
+    width: 3px;
+    background: #A7B0BB;
+    border-right: 1px solid #777E86;
+    border-left: 1px solid #DDE3EB;
+    margin: 5px 0;
+    position: absolute;
+    top: 0;
+    right: -3px;
+    bottom: 0;
+  }
+  .oscillators {
+    display: inline-block;
+    float:left;
+    width:100%;
+    box-sizing: border-box;
+
+  }
+  .filters {
+    position: relative;
+    .row {
+      padding-left: 48px;
+    }
+    .filter-mix {
+      position: absolute;
+      left: 0;
+      height:195px;
+      width: 45px;
+      .input[type='range'].slider {
+        
+
+      }
+      .controls {
+        padding: 15px 5px;
+        margin: 0;
+        position: absolute;
+        left: -56px;
+        top: 86px;
+        transform: rotate(-90deg);
+        height: 33px;
+      }
+      .label {
+        font-size: 12px;
+        margin: 5px 0;
+        color: #444D6E;
+        font-weight: bold;
+        text-align: center;
+        display: block;
+      }
+    }
+  }
+  .filter-list {
+    width: 100%;
+    .filter {
+      width: 100%;
+    }
+  }
+}
+#keyboard {
+  display: none;
+  position: absolute !important;
+  bottom:0;
+}
