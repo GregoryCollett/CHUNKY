@@ -1,11 +1,12 @@
+ @import "compass/css3/images";
+ 
 .module {
 	float:left;
 	width:100%;
 	margin:1px;
 	border-radius:3px;
 	background-color: rgba(210,219,232,1);
-	background: filter-gradient(#d2dbe8, #b5bbcb, vertical);
-	background: linear-gradient(top, rgba(210,219,232,1) 0%, rgba(181,187,203,1) 100%);
+	@include background-image(linear-gradient(top, rgba(210,219,232,1) 0%, rgba(181,187,203,1) 100%));
 	padding: 0 5px;
 	.header {
 	  display:flex;
@@ -67,8 +68,7 @@
 	  display: -webkit-box;
 	  border-radius: 5px;
 	  background-color: rgba(52,58,74,1);
-	  background: filter-gradient(#343a4a, #1c2236, vertical);
-	  background: linear-gradient(top, rgba(52,58,74,1) 0%, rgba(53,59,80,1) 49%, rgba(28,34,54,1) 100%);
+	  @include background-image(linear-gradient(top, rgba(52,58,74,1) 0%, rgba(53,59,80,1) 49%, rgba(28,34,54,1) 100%));
 	  margin: 0 0 5px;
 	  -webkit-box-shadow: inset 0px 0px 56px 16px rgba(0,0,0,0.75);
 	  -moz-box-shadow: inset 0px 0px 56px 16px rgba(0,0,0,0.75);
