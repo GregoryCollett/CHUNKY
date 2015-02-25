@@ -1,8 +1,12 @@
 # CHUNKY
-### Web Synthesizer
 
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.11.0.
+Lots of bugs :)
+
+Lots of features in the pipeline :)
+
+CAUTION: This is known to annoy pets :D
+
+Have fun XD
 
 ## Build & development
 
