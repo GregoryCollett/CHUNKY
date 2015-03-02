@@ -15,7 +15,7 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
       var self = this;
 
       this.ctx = ctx;
-      
+      this.sampleRate = 2048;
       this.osc1 = new Oscillator(this.ctx, 'sawtooth', 4, 0, -10);
       this.osc2 = new Oscillator(this.ctx, 'sawtooth', 3, 0, 10);
       this.osc3 = new Oscillator(this.ctx, 'square', 1, 0);
@@ -26,7 +26,12 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
       this.env2 = new Envelope(this.ctx);
-      this.lfo = new LFO(this.ctx);
+      this.lfo = new LFO(this.ctx, {
+        target:this.vcf.frequency, 
+        callback: function(param, value) {
+          param.value = value;
+        }
+      });
       this.distortion = new Distortion(this.ctx);
       this.reverb = new Reverb(this.ctx);
       this.master = this.ctx.createGain();
@@ -107,6 +112,16 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
             osc.stop();
           });
           return this;
+        }
+      },
+      loadPatch: {
+        value: function() {
+
+        }
+      },
+      savePatch: {
+        value: function() {
+
         }
       },
       vcfMix: {

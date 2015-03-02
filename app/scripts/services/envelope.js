@@ -2,11 +2,33 @@
 
 angular.module('chunky')
   .factory('Envelope', function() {
+    var EnvelopeParam = function EnvelopeParam(cfg) {
+      this.parent = cfg.parent || null;
+      this.target = cfg.target || null;
+      this.meta = cfg.meta || {};
+      this.range = cfg.range || this.params.range.defaultValue;
+    };
+    EnvelopeParam.prototype = Object.create(null, {
+      range: {
+        get: function() {
+          return [this.min, this.max];
+        },
+        set: function(range) {
+          this.min = range[0];
+          this.max = range[1];
+        }
+      },
+      params: {
+        value: {
+          range: {
+            defaultValue: [0, 1]
+          }
+        }
+      }
+    });
+
     var Envelope = function Envelope(ctx) {
       this.ctx = ctx;
-      
-      this.min = 0;
-      this.max = 1;
       
       this._attack = 1000 / 50000.0;
       this._decay = 50000.0 / 50000.0;
@@ -19,38 +41,21 @@ angular.module('chunky')
     Envelope.prototype = Object.create(null, {
       connect: {
         value: function(target, param, meta) {
-          var env = this,
-          finalTarget;
-
-          target.envelope = env;
+          var finalTarget;
 
           if (angular.isArray(param)) {
-            finalTarget = target[param[0]][param[1]]
+            finalTarget = target[param[0]][param[1]];
           } else {
-            finalTarget = target[param]
+            finalTarget = target[param];
           }
 
-          this.params.push({
-            parent: target, 
-            target:finalTarget, 
-            meta: meta
-          });
-        }
-      },
-      disconnect: {
-        value: function() {
+          var param = new EnvelopeParam({parent:target, target:finalTarget, meta: meta});
+          
+          target.envelope = param;
 
-        }
-      },
-      adsr: {
-        get: function() {
-          return [this._attack, this._decay, this._sustain, this._release];
-        },
-        set: function(adsr) {
-          this._attack = adsr[0] / 50000.0;
-          this._decay = adsr[0] / 50000.0;
-          this._sustain = adsr[0] / 100.0;
-          this._release = adsr[0] / 50000.0;
+          this.params.push(param);
+
+          return param;
         }
       },
       attack: {
@@ -63,10 +68,10 @@ angular.module('chunky')
       },
       decay: {
         get: function() {
-          return this._decay
+          return this._decay;
         },
         set: function(decay) {
-          this._decay = decay / 50000.0;;
+          this._decay = decay / 50000.0;
         }
       },
       sustain: {
@@ -82,16 +87,7 @@ angular.module('chunky')
           return this._release;
         },
         set: function(release) {
-          this._release = release / 50000.0;;
-        }
-      },
-      range: {
-        get: function() {
-          return [this.min, this.max];
-        },
-        set: function(range) {
-          this.min = range[0];
-          this.max = range[1];
+          this._release = release / 50000.0;
         }
       },
       triggerOn: {
@@ -101,8 +97,8 @@ angular.module('chunky')
 
           angular.forEach(this.params, function (param) {
             var attack = parseFloat(now + self.attack),
-              min = parseFloat(self.min),
-              max = parseFloat(self.max);
+              min = parseFloat(param.min),
+              max = parseFloat(param.max);
 
             param.target.cancelScheduledValues(now);
 
