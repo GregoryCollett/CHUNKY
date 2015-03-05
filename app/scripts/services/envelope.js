@@ -30,11 +30,12 @@ angular.module('chunky')
     var Envelope = function Envelope(ctx) {
       this.ctx = ctx;
       
-      this._attack = 1000 / 50000.0;
-      this._decay = 50000.0 / 50000.0;
-      this._sustain = 100 / 100.0;
-      this._release = 1000 / 50000.0;
+      this.attack = 1000;
+      this.decay = 50000.0;
+      this.sustain = 100;
+      this.release = 1000;
       
+      this.inverted = false;
       this.reTrigger = false;
 
       this.params = [];
@@ -92,6 +93,15 @@ angular.module('chunky')
           this._release = parseFloat(release / 50000.0);
         }
       },
+      inverted: {
+        enumerable: true,
+        get: function() {
+          return this._inverted;
+        },
+        set: function(inverted) {
+          this._inverted = inverted;
+        }
+      },
       reTrigger: {
         enumerable: true,
         get: function() {
@@ -106,13 +116,28 @@ angular.module('chunky')
           var now = this.ctx.currentTime;
 
           for (var i = 0; i < this.params.length; i++) {
+            this.processTriggerOn(this.params[i], now);
+          }
+        }
+      },
+      processTriggerOn: {
+        value: function(param, now) {
+          if (!this.inverted) {
             // Reset schedule and set value to base value
-            this.params[i].target.cancelScheduledValues(now);
-            this.params[i].target.setValueAtTime(this.params[i].min, now);
+            param.target.cancelScheduledValues(now);
+            param.target.setValueAtTime(param.min, now);
             // Attack to max value
-            this.params[i].target.exponentialRampToValueAtTime(this.params[i].max, now + this.attack);
+            param.target.exponentialRampToValueAtTime(param.max, now + this.attack);
             // Decay and Sustain (for now :D)
-            this.params[i].target.linearRampToValueAtTime(this.sustain * (this.params[i].max - this.params[i].min) + this.params[i].min, (now + this.attack + this.decay));
+            param.target.linearRampToValueAtTime(this.sustain * (param.max - param.min) + param.min, (now + this.attack + this.decay));
+          } else {
+            // Reset schedule and set value to base value
+            param.target.cancelScheduledValues(now);
+            param.target.setValueAtTime(param.max, now);
+            // Attack to max value
+            param.target.linearRampToValueAtTime(param.min, now + this.attack);
+            // Decay and Sustain (for now :D)
+            param.target.linearRampToValueAtTime(this.sustain * (param.min - param.max) + param.max, (now + this.attack + this.decay));
           }
         }
       },

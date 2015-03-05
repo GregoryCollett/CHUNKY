@@ -296,7 +296,7 @@
 							<tabset>
 								<tab heading="VCF ENV" class="env">
 									<div class="row">
-										<envelope params="chunky.vcfEnvelope" width="515" height="64"></envelope>
+										<envelope params="chunky.vcfEnvelope" inverted="chunky.vcfEnvelope.inverted" width="515" height="64"></envelope>
 									</div>
 									<div class="row">								
 										<div class="param">
@@ -328,6 +328,12 @@
 												RETRIG
 											</label>
 												<input data-ng-model="chunky.vcfEnvelope.reTrigger" class="enabled retrig" type="checkbox"/>
+										</div>
+										<div class="param">
+											<label>
+												INVERT
+											</label>
+												<input data-ng-model="chunky.vcfEnvelope.inverted" class="enabled retrig" type="checkbox"/>
 										</div>
 									</div>
 								</tab>

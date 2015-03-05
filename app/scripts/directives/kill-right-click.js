@@ -6,7 +6,7 @@ angular.module('chunky')
 			restrict: 'CA',
 			link: function(el) {
 				$document.on('contextmenu', function(e) {
-					e.preventDefault();
+					//e.preventDefault();
 				});
 			}
 		};

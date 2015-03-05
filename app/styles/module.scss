@@ -1,9 +1,9 @@
  @import "compass/css3/images";
  
-.enabled {
+input[type="checkbox"].enabled {
 	margin-top:3px;
 	margin-bottom: 4px;
-	margin-right: 6px;
+	margin-right: 3px;
 	display:block;
 	float:left;
 	border-radius: 100%;
