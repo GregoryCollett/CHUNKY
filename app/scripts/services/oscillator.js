@@ -2,28 +2,31 @@
 
 angular.module('chunky')
   .factory('Oscillator', function() {
+    var isEmpty = function(obj) {
+      return Object.keys(obj).length === 0;
+    };
     //var Oscillator = function Oscillator(ctx, cfg) {
-    var Oscillator = function Oscillator(ctx, shape, octave, frequency, detune) {
+    var Oscillator = function Oscillator(ctx, cfg) {
+      cfg = cfg || {};
+
       this.ctx = ctx;
-      
-      this.osc = ctx.createOscillator();
+      this.type = 'oscillator';
+
+      this.voices = {};
+
       this.controlNode = ctx.createGain();
       this.node = this.ctx.createGain();
       this.output = ctx.createGain();
       
-      this._frequencyKey = frequency || 55;
-      this._octave = octave || 2;
-      this._fine = detune || 0;
-      this._frequency = Math.pow(2, this._octave * this.frequencyKey);
-      this.osc.type = shape;
-      this.osc.frequency.value = this._frequency;
-      this.osc.detune.value = this._fine;
+      this.frequency = cfg.frequency || 55;
+      this.octave = cfg.octave || 2;
+      this.fine = cfg.detune || 0;
+      this.shape = cfg.shape || 'sine';
       
       this.controlNode.gain.value = 0.5;
       this.node.gain.value = 0;
       this.output.gain.value = 0;
       
-      this.osc.connect(this.controlNode);
       this.controlNode.connect(this.node);
       this.node.connect(this.output);
       
@@ -43,33 +46,59 @@ angular.module('chunky')
       },
       init: {
         value: function() {
-          this.osc.start(0);
+          //this.osc.start(0);
         }
       },
       start: {
-        value: function() {
+        value: function(note, freq) {
+          this.frequency = freq;
+
           var now = this.ctx.currentTime;
+          
+          var osc = this.ctx.createOscillator();
+          osc.type = this.shape;
+          osc.frequency.value = this.frequency;
+          osc.detune.value = this.fine;
+          osc.connect(this.controlNode);
+          osc.start(0);
+
+          this.voices[note] = osc;
+
           this.output.gain.setValueAtTime(1, now);
           return this;
         }
       },
       stop: {
-        value: function(release) {
-          release = release || 0;
-          var now = this.ctx.currentTime;
-          this.output.gain.setValueAtTime(0, now + release);
+        value: function(note, freq) {
+          this.voices[note].disconnect();
+
+          delete this.voices[note];
+
+          if (isEmpty(this.voices)) {
+            this.output.gain.setValueAtTime(0, 0);
+          }
+
           return this;
+        }
+      },
+      shape: {
+        enumerable: true,
+        get: function() {
+          return this._shape;
+        },
+        set: function(shape) {
+          this._shape = shape;
         }
       },
       frequency: {
         enumerable: true,
         get: function() {
-          return this.osc.frequency.value;
+          return this._frequency;
         },
         set: function(frequency) {
           this._frequencyKey = frequency;
           this._frequency = Math.pow(2, this.octave) * this._frequencyKey;
-          this.osc.frequency.setValueAtTime(this._frequency, 0);
+          //this.osc.frequency.setValueAtTime(this._frequency, 0);
         }
       },
       octave: {
@@ -88,7 +117,7 @@ angular.module('chunky')
         },
         set: function(fine) {
           this._fine = fine;
-          this.osc.detune.setValueAtTime(this._fine, 0);
+          //this.osc.detune.setValueAtTime(this._fine, 0);
         }
       },
       gain: {

@@ -23,17 +23,20 @@ angular.module('chunky')
 			min: '=',
 			max: '=',
 			speed: '=',
-			scale: '='
+			scale: '=',
+			step: '='
 		},
 		link: function(scope, elem, attr) {
+			scope.options = scope.options || {};
+			
 			var defaults = {
 				range: 270,
-				class: scope.options.class || 'knob-default',
+				//class: scope.options.class || 'knob-default',
 				responsive: scope.options.responsive || false,
-				min: scope.options.min || 0,
-				max: scope.options.max || 100,
-				speed: scope.options.speed || 0.5,
-				scale: scope.options.scale || 1,
+				min: scope.min || scope.options.min || 0,
+				max: scope.max || scope.options.max || 100,
+				speed: scope.speed || scope.options.speed || 0.5,
+				scale: scope.scale || scope.step || scope.options.scale || 1,
 				holdKey: false,
 				groupKey: false,
 			},
@@ -45,7 +48,7 @@ angular.module('chunky')
 			hand = movingFace.find('.knob-hand'),
 			canvas = container.find('.knob-progress');
 
-			container.addClass(params.class);
+			//container.addClass(params.class);
 
 			movingFace
 				.css('position', 'relative')

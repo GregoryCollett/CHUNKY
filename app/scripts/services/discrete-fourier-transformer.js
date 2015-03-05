@@ -5,14 +5,14 @@ angular.module('chunky')
 		var DiscreteFourierTransformer = function DiscreteFourierTransformer(bufferSize, sampleRate) {
 			FourierTransformer.call(this, bufferSize, sampleRate);
 
-			var twoPI = Math.PI * 2,
-				n = bufferSize / 2 * bufferSize,
-				i;
+			var twoPI = Math.PI * 2;
 
-			this.sinTable = new Float32Array(n);
-			this.cosTable = new Float32Array(n);
+			this.n = bufferSize / 2 * bufferSize;
 
-			for (i = 0; i < n; i++) {
+			this.sinTable = new Float32Array(this.n);
+			this.cosTable = new Float32Array(this.n);
+
+			for (var i = 0; i < this.n; i++) {
 				this.sinTable[i] = Math.sin(i * twoPI / bufferSize);
 				this.cosTable[i] = Math.cos(i * twoPI / bufferSize);
 			}
@@ -25,11 +25,10 @@ angular.module('chunky')
 						imag = this._imag,
 						rval,
 						ival,
-						k = 0,
-						i = 0;
+						n = this.n;
 
-					for (k = 0; k < this._bufferSize/2; k++) {
-						for (i = 0; i < buffer.length; i++) {
+					for (var k = 0; k < this._bufferSize/2; k++) {
+						for (var i = 0; i < buffer.length; i++) {
 							rval += this.cosTable[k*n] * buffer[n];
 							ival += this.sinTable[k*n] * buffer[n];
 						}

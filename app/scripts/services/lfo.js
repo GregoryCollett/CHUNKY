@@ -1,5 +1,11 @@
 'use strict';
 
+/*
+** Chunky LFO (Low Frequency Oscillator)
+** Use: Used to modulate a web audio parameter.
+** Thoughts: How can we improve this module>>
+** Currently their is some crazy circular reference which I want to get rid of....
+*/
 angular.module('chunky')
   .factory('LFO', function() {
     var LFO = function LFO(ctx, cfg) {
@@ -14,8 +20,10 @@ angular.module('chunky')
       this.oscillation = cfg.offset || this.params.oscillation.value;
       this.phase = cfg.phase || this.params.phase.value;
       this.target = cfg.target || {};
-      // This pattern using a callback for process audio has been stolen from TUNA.js thanks guys
+
       this.output.onaudioprocess = this.callback(cfg.callback || function() {});
+
+      this.output.connect(this.ctx.destination);
     };
 
     LFO.prototype = Object.create(null, {
@@ -23,27 +31,43 @@ angular.module('chunky')
         writable: true,
         value: {
           frequency: {
+            name: 'frequency',
+            label: 'FREQ',
             value: 1,
+            defaultValue: 1,
             min: 0,
             max: 20,
+            step: 0.01,
             type: 'float'
           },
           offset: {
+            name: 'offset',
+            label: 'OFST',
             value: 0.85,
+            defaultValue: 0.85,
             min: 0,
             max: 22049,
+            step: 1,
             type: 'float',
           },
           oscillation: {
+            name: 'oscillation',
+            label: 'OSC',
             value: 0.3,
+            defaultValue: 0.3,
             min: -22050,
             max: 22050,
+            step: 1,
             type: 'float'
           },
           phase: {
+            name: 'phase',
+            label: 'PHSE',
             value: 0,
+            defaultValue: 0,
             min: 0,
             max: 2 * Math.PI,
+            step: 0.01,
             type: 'float'
           }
         }
@@ -54,7 +78,8 @@ angular.module('chunky')
           return this._frequency;
         },
         set: function(frequency) {
-          this._frequency = frequency;
+          this._frequency = parseFloat(frequency);
+          this.params.frequency.value = parseFloat(frequency);
           this._phaseInc = 2 * Math.PI * this._frequency * 256 * 44100;
         }
       },
@@ -64,7 +89,8 @@ angular.module('chunky')
           return this._offset;
         },
         set: function(offset) {
-          this._offset = offset;
+          this._offset = parseFloat(offset);
+          this.params.offset.value = parseFloat(offset);
         }
       },
       oscillation: {
@@ -73,7 +99,8 @@ angular.module('chunky')
           return this._oscillation;
         },
         set: function(oscillation) {
-          this._oscillation = oscillation;
+          this._oscillation = parseFloat(oscillation);
+          this.params.oscillation.value = parseFloat(oscillation);
         }
       },
       phase: {
@@ -81,7 +108,8 @@ angular.module('chunky')
           return this._phase;
         },
         set: function(phase) {
-          this._phase = phase;
+          this._phase = parseFloat(phase);
+          this.params.phase.value = parseFloat(phase);
         }
       },
       target: {
@@ -97,10 +125,10 @@ angular.module('chunky')
           var self = this;
           return function() {
             self._phase += self._phaseInc;
-            if (self.phase > 2 * Math.PI) {
-              self.phase = 0;
+            if (self._phase > 2 * Math.PI) {
+              self._phase = 0;
             }
-            callback(self.target, self.offset + self.oscillation * Math.sin(self.phase));
+            callback(self._target, self._offset + self._oscillation * Math.sin(self._phase));
           };
         }
       }

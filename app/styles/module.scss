@@ -1,5 +1,39 @@
  @import "compass/css3/images";
  
+.enabled {
+	margin-top:3px;
+	margin-bottom: 4px;
+	margin-right: 6px;
+	display:block;
+	float:left;
+	border-radius: 100%;
+	width: 9px;
+	height: 9px;
+	background: #6F727F;
+	border: 1px solid #303647;
+	transition: .2s;
+	-webkit-appearance: none;
+	outline:none !important;
+	&:checked {
+		background: #87EAFF;
+		box-shadow: 
+		0 0 3px #87EAFF;
+		outline:none !important;
+	}
+	&:focus {
+		outline: none !important;
+	}
+
+	&.retrig {
+		width: 32px;
+		height: 32px;
+		margin-top: 0;
+		margin: 0 auto;
+		margin-left: 2px;
+		outline: none;
+	}
+}
+
 .module {
 	float:left;
 	width:100%;
@@ -38,28 +72,7 @@
 	      outline: 0;
 	    }
 	  }
-	  .enabled {
-	    margin-top:3px;
-	    margin-bottom: 4px;
-	    margin-right: 6px;
-	    display:block;
-	    float:left;
-	    border-radius: 100%;
-	    width: 9px;
-	    height: 9px;
-	    background: #6F727F;
-	    border: 1px solid #303647;
-	    transition: .2s;
-	    -webkit-appearance: none;
-	    &:checked {
-	      background: #87EAFF;
-	      box-shadow: 
-	        0 0 3px #87EAFF;
-	    }
-	    &:focus {
-	      outline: none;
-	    }
-	  }
+
 	}
 
 	.controls {

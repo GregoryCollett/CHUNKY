@@ -15,10 +15,14 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
       var self = this;
 
       this.ctx = ctx;
+
+      this.voices = {};
       this.sampleRate = 2048;
-      this.osc1 = new Oscillator(this.ctx, 'sawtooth', 4, 0, -10);
-      this.osc2 = new Oscillator(this.ctx, 'sawtooth', 3, 0, 10);
-      this.osc3 = new Oscillator(this.ctx, 'square', 1, 0);
+
+      // setup nodes
+      this.osc1 = new Oscillator(this.ctx, {shape: 'sawtooth', octave: 4, detune:-10});
+      this.osc2 = new Oscillator(this.ctx, {shape: 'sawtooth', octave: 3, detune: 10});
+      this.osc3 = new Oscillator(this.ctx, {shape: 'square', octave: 1});
       this.noise = new Noise(this.ctx);
       this.vcf = new Filter(this.ctx, {type:'bandpass'});
       this.vcf2 = new Filter(this.ctx, {type:'highpass'});
@@ -26,92 +30,75 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
       this.env2 = new Envelope(this.ctx);
-      this.lfo = new LFO(this.ctx, {
-        target:this.vcf.frequency, 
-        callback: function(param, value) {
-          param.value = value;
-        }
-      });
       this.distortion = new Distortion(this.ctx);
       this.reverb = new Reverb(this.ctx);
       this.master = this.ctx.createGain();
       this.analyser = this.ctx.createAnalyser();
 
-      this.oscs = [this.osc1, this.osc2, this.osc3];
+      // make life easier
+      this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
       this.envelopes = [this.vcfEnvelope, this.vcaEnvelope, this.env1, this.env2];
 
-      this.vcf.input.gain.value = 0.5;
-      this.vcf2.input.gain.value = 0.5;
-      this._vcfmix = 0.5;
+      // basic config
+      this.vcfmix = 0.5;
       this.analyser.fftSize = 2048;
-
       this.master.gain.value = 1;
       
       // Synth Routing (make this dynamic in the future) :D
-      //Connect up param controllers
-      //this.lfo.connect(this.vcf2._filter, 'frequency');
-      this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
-      this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
-      this.vcaEnvelope.connect(this.master, 'gain');
-
-      angular.forEach(this.oscs, function(osc) {
-        osc.connect(self.vcf.input);
-        osc.connect(self.vcf2.input);
-      });
-      this.noise.connect(this.vcf.input);
-      this.noise.connect(this.vcf2.input);
+      for (var i = 0; i < this.oscs.length; i++) {
+        this.oscs[i].connect(this.vcf.input);
+        this.oscs[i].connect(this.vcf2.input);
+      }
       this.vcf.connect(this.distortion.input);
       this.vcf2.connect(this.distortion.input);
       this.distortion.connect(this.reverb);
       this.reverb.connect(this.master);
       this.master.connect(this.analyser);
       this.analyser.connect(this.ctx.destination);
-      
-      this.init();
+
+      // Link modulators/envelopes
+      this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
+      this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
+      this.vcaEnvelope.connect(this.master, 'gain');
+      this.lfo = new LFO(this.ctx, {
+        target: this.vcf2._filter.frequency, 
+        callback: function(param, value) {
+          param.setValueAtTime(value, 0);
+        }
+      });
     };
     
     Chunky.prototype = Object.create(null, {
-      init: {
-        value: function() {
-          angular.forEach(this.oscs, function(osc) {
-            osc.init();
-          });
-          return this;
-        }
-      },
-      play: {
-        value: function() {
-          this.vcfEnvelope.triggerOn();
-          this.vcaEnvelope.triggerOn();
-          this.noise.start();
-          angular.forEach(this.oscs, function(osc) {
-            osc.start();
-          });
-          return this;
-        }
-      },
       playNote: {
-        value: function(freq) {
-          this.vcfEnvelope.triggerOn();
-          this.vcaEnvelope.triggerOn();
-          this.noise.start();
-          angular.forEach(this.oscs, function(osc) {
-            osc.frequency = freq;
-            osc.start();
-          });
-          return this;
+        value: function(note, freq) {
+          var i;
+
+          this.voices[note] = freq;
+          
+          for (i = 0; i < this.envelopes.length; i++) {
+            if (!this.envelopes[i].reTrigger && Object.keys(this.voices).length === 1 || this.envelopes[i].reTrigger) {
+              this.envelopes[i].triggerOn();
+            }
+          }
+
+          for(i = 0; i < this.oscs.length; i++) {
+            this.oscs[i].start(note, freq);
+          }
         }
       },
       stop: {
-        value: function() {
-          var self = this;
-          this.vcfEnvelope.triggerOff();
-          this.vcaEnvelope.triggerOff();
-          this.noise.stop();
-          angular.forEach(this.oscs, function(osc) {
-            osc.stop();
-          });
-          return this;
+        value: function(note, freq) {
+          var i;
+
+          delete this.voices[note];
+
+          // for (i = 0; i < this.envelopes.length; i++) {
+          //   this.envelopes[i].triggerOff();
+          // }
+
+          for(i = 0; i < this.oscs.length; i++) {
+            this.oscs[i].stop(note, freq);
+          }
         }
       },
       loadPatch: {
@@ -134,8 +121,21 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
           this.vcf.input.gain.value = parseFloat(val);
           this.vcf2.input.gain.value = parseFloat(1 - val);
         }
+      },
+      glide: {
+        enumberable: true,
+        get: function() {
+          return this._glide;
+        },
+        set: function(glide) {
+          this._glide = parseFloat(glide);
+        }
       }
     });
+
+    Chunky.isEmpty = function(obj) {
+      return Object.keys(obj).length === 0;
+    }
 
     return new Chunky(audioCtx);
   })
@@ -146,10 +146,10 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
     // Setup Keyboard Callbacks
     $scope.keyboard = {
       keydown: function(note, frequency) {
-        $scope.chunky.playNote(frequency);
+        $scope.chunky.playNote(note, frequency);
       },
       keyup: function(note, frequency) {
-        $scope.chunky.stop();
+        $scope.chunky.stop(note, frequency);
       }
     };
   }); 

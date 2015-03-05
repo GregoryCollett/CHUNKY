@@ -46,6 +46,7 @@ angular.module('chunky')
 			cfg = cfg || {};
 
 			this.ctx = ctx;
+			this.type = 'noise';
 
 			this.node = this.ctx.createScriptProcessor(2048, 1, 1);
 			this._wet = this.ctx.createGain();
@@ -108,7 +109,7 @@ angular.module('chunky')
 					}
 				}
 			},
-			type: {
+			generator: {
 				enumerable: true,
 				get: function() {
 					return this._type;

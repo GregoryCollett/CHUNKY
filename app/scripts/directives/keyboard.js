@@ -6,7 +6,8 @@ angular.module('chunky')
         restrict: 'EA',
       scope: {
         keyup: '&',
-        keydown: '&'
+        keydown: '&',
+        polyphonic: '='
       },
       link: function(scope, elem, attr) {
         var keyboard = new QwertyHancock({
@@ -33,7 +34,7 @@ angular.module('chunky')
         keyboard.keyUp = function (note, frequency) {
           scope.$apply(function(){
             delete depressedKeys[note];
-            if (isEmpty(depressedKeys)) {
+            if (scope.polyphonic) {
               scope.keyup()(note, frequency);
             }
           });

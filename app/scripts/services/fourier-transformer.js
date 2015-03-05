@@ -24,10 +24,10 @@ angular.module('chunky')
 			calculateSpectrum: {
 				value: function() {
 					var spectrum  = this._spectrum,
-						real      = this._real,
-						imag      = this._imag,
-						bSi       = 2 / this._bufferSize,
-						sqrt      = Math.sqrt,
+						real = this._real,
+						imag = this._imag,
+						bSi = 2 / this._bufferSize,
+						sqrt = Math.sqrt,
 						rval, 
 						ival,
 						mag;

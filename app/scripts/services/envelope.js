@@ -14,8 +14,8 @@ angular.module('chunky')
           return [this.min, this.max];
         },
         set: function(range) {
-          this.min = range[0];
-          this.max = range[1];
+          this.min = parseFloat(range[0]);
+          this.max = parseFloat(range[1]);
         }
       },
       params: {
@@ -35,6 +35,8 @@ angular.module('chunky')
       this._sustain = 100 / 100.0;
       this._release = 1000 / 50000.0;
       
+      this.reTrigger = false;
+
       this.params = [];
     };
     
@@ -49,13 +51,13 @@ angular.module('chunky')
             finalTarget = target[param];
           }
 
-          var param = new EnvelopeParam({parent:target, target:finalTarget, meta: meta});
+          var moddableParam = new EnvelopeParam({parent:target, target:finalTarget, meta: meta});
           
-          target.envelope = param;
+          target.envelope = moddableParam;
 
-          this.params.push(param);
+          this.params.push(moddableParam);
 
-          return param;
+          return moddableParam;
         }
       },
       attack: {
@@ -63,7 +65,7 @@ angular.module('chunky')
           return this._attack;
         },
         set: function(attack) {
-          this._attack = attack / 50000.0;
+          this._attack = parseFloat(attack / 50000.0);
         }
       },
       decay: {
@@ -71,7 +73,7 @@ angular.module('chunky')
           return this._decay;
         },
         set: function(decay) {
-          this._decay = decay / 50000.0;
+          this._decay = parseFloat(decay / 50000.0);
         }
       },
       sustain: {
@@ -79,7 +81,7 @@ angular.module('chunky')
           return this._sustain;
         },
         set: function(sustain) {
-          this._sustain = sustain / 100.0;
+          this._sustain = parseFloat(sustain / 100.0);
         }
       },
       release: {
@@ -87,39 +89,43 @@ angular.module('chunky')
           return this._release;
         },
         set: function(release) {
-          this._release = release / 50000.0;
+          this._release = parseFloat(release / 50000.0);
+        }
+      },
+      reTrigger: {
+        enumerable: true,
+        get: function() {
+          return this._retrig;
+        },
+        set: function(retrig) {
+          this._retrig = retrig;
         }
       },
       triggerOn: {
         value: function() {
-          var now = this.ctx.currentTime,
-              self = this;
+          var now = this.ctx.currentTime;
 
-          angular.forEach(this.params, function (param) {
-            var attack = parseFloat(now + self.attack),
-              min = parseFloat(param.min),
-              max = parseFloat(param.max);
-
-            param.target.cancelScheduledValues(now);
-
-            param.target.setValueAtTime(0, now);
-
-            param.target.linearRampToValueAtTime(max, attack);
-
-            param.target.linearRampToValueAtTime(self.sustain * (max - min) + min, (attack + self.decay));
-          });
+          for (var i = 0; i < this.params.length; i++) {
+            // Reset schedule and set value to base value
+            this.params[i].target.cancelScheduledValues(now);
+            this.params[i].target.setValueAtTime(this.params[i].min, now);
+            // Attack to max value
+            this.params[i].target.exponentialRampToValueAtTime(this.params[i].max, now + this.attack);
+            // Decay and Sustain (for now :D)
+            this.params[i].target.linearRampToValueAtTime(this.sustain * (this.params[i].max - this.params[i].min) + this.params[i].min, (now + this.attack + this.decay));
+          }
         }
       },
       triggerOff: {
         value: function() {
-          var now = this.ctx.currentTime,
-              self = this;
-
-          angular.forEach(this.params, function(param) {
-            param.target.linearRampToValueAtTime(0, now + parseFloat(self.release));
-            param.target.linearRampToValueAtTime(0, now + parseFloat(self.release) + 0.01);
-            param.target.cancelScheduledValues(0, now + parseFloat(self.release) + 0.02);
-          });
+          var now = this.ctx.currentTime;
+          for (var i = 0; i < this.params.length; i++) {
+            // Release the note or param or whatever the fuck is being played
+            // (in theory this should really delay the note stop at current... it doesnt!!)
+            this.params[i].target.linearRampToValueAtTime(0, now + this.release);
+            this.params[i].target.linearRampToValueAtTime(0, now + this.release + 0.01);
+            this.params[i].target.cancelScheduledValues(0, now + this.release + 0.02);
+          }
         }
       }
     });
