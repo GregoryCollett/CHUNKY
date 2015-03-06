@@ -98,7 +98,7 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
           // }
 
           for(i = 0; i < this.oscs.length; i++) {
-            if (this.oscs[i].type === 'oscillator') {
+            if (this.oscs[i] instanceof Oscillator) {
               this.oscs[i].stop(note, freq);
             } else {
               if (Object.keys(this.voices).length < 1) {
