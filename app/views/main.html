@@ -1,5 +1,6 @@
 <div class="chunky">
 	<div class="col-md-4">
+		<!-- OSCILLATORS -->
 		<div class="module">
 			<div class="oscillator" data-ng-repeat="osc in chunky.oscs" data-ng-if="osc.type === 'oscillator'">
 				<div class="spacer" data-ng-if="$index >= 1"></div>
@@ -33,11 +34,12 @@
 					<knob value="osc.gain" 
 						label="GAIN"
 						class="knob-default"
-						options="{min:0, max:2, scale:0.01, class:'knob-default', speed:0.1}">
+						options="{min:0, max:1, scale:0.01, class:'knob-default', speed:0.1}">
 					</knob>
 				</div>
 			</div>
 		</div>
+		<!-- MODULATION OSC -->
 		<div class="module">
 			<div class="header">
 				<label>
@@ -49,6 +51,7 @@
 				<p class="text-center" style="display: block;margin: 12px auto;">COMING SOON!</P>
 			</div>
 		</div>
+		<!-- NOISE -->
 		<div class="module">
 			<div class="header">
 				<label>
@@ -73,6 +76,7 @@
 	<div class="col-md-8">
 		<div class="row">
 			<div class="col-md-6">
+				<!-- FILTERS -->
 				<div class="module filters">
 					<div class="row">
 						<div class="filter-mix">
@@ -88,13 +92,14 @@
 							<div class="spacer-vertical"></div>
 						</div>
 						<div class="filter-list">
-							<div class="filter">
+							<div class="filter" data-ng-repeat="filter in chunky.filters">
+								<div class="spacer" data-ng-if="$index >= 1"></div>
 								<div class="header">
 									<label>
-										<input data-ng-model="chunky.vcf.enabled" class="enabled" type="checkbox"/>
-										VCF 1
+										<input data-ng-model="filter.enabled" class="enabled" type="checkbox"/>
+										VCF {{$index + 1}}
 									</label>
-									<select data-ng-model="chunky.vcf._filter.type">
+									<select data-ng-model="filter._filter.type">
 										<option value="lowpass">LP</option>
 										<option value="bandpass">BP</option>          
 										<option value="highpass">HP</option>          
@@ -102,18 +107,18 @@
 									</select>
 								</div>
 								<div class="controls">
-						            <knob value="chunky.vcf.frequency" 
-						            	min="chunky.vcf.meta.params.frequency.min"
-						            	max="chunky.vcf.meta.params.frequency.max"
+						            <knob value="filter.frequency" 
+						            	min="filter.meta.params.frequency.min"
+						            	max="filter.meta.params.frequency.max"
 						            	scale="1"
 						            	speed="1"
 						            	class="knob-default"
 						            	options="{min:80, max:500, scale: 0.1, class:'knob-default', speed: 0.1}" 
 						            	label="CUT">
 						            </knob>
-						            <knob value="chunky.vcf.resonance" 
-						            	min="chunky.vcf.meta.params.resonance.min"
-						            	max="chunky.vcf.meta.params.resonance.max"
+						            <knob value="filter.resonance" 
+						            	min="filter.meta.params.resonance.min"
+						            	max="filter.meta.params.resonance.max"
 						            	scale="0.1"
 						            	speed="0.5"
 						            	class="knob-default"
@@ -122,74 +127,16 @@
 						            </knob>
 						        </div>
 						    </div>
-						    <div class="filter">
-						    	<div class="spacer"></div>
-						    	<div class="header">
-						    		<label>
-										<input data-ng-model="chunky.vcf2.enabled" class="enabled" type="checkbox"/>
-										VCF 2
-									</label>
-						    		<select data-ng-model="chunky.vcf2._filter.type">
-						    			<option value="lowpass">LP</option>
-						    			<option value="bandpass">BP</option>          
-						    			<option value="highpass">HP</option>          
-						    			<option value="notch">NTC</option>
-						    		</select>
-						    	</div>
-						    	<div class="controls">
-						    		<knob value="chunky.vcf2.frequency"
-						    			min="chunky.vcf2.meta.params.frequency.min"
-						            	max="chunky.vcf2.meta.params.frequency.max"
-						            	scale="10"
-						            	speed="1"
-						            	class="knob-default"
-						    			options="{min:0, max:22000, class:'knob-default', speed: 1}" 
-						    			label="CUT"></knob>
-						    		<knob value="chunky.vcf2.resonance" 
-						    			min="chunky.vcf2.meta.params.resonance.min"
-						            	max="chunky.vcf2.meta.params.resonance.max"
-						            	scale="0.1"
-						            	speed="0.5"
-						            	class="knob-default"
-						    			options="{min:0, max:20, class:'knob-default', speed: 0.5, scale: 0.01}" 
-						    			label="RES">
-						    		</knob>
-						    		<knob value="chunky.vcf2.gain" 
-						    			min="chunky.vcf.meta.params.gain.min"
-						            	max="chunky.vcf.meta.params.gain.max"
-						            	scale="0.1"
-						            	speed="0.5"
-						            	class="knob-default"
-						    			options="{min:0, max:1, class:'knob-default', speed: 0.1, scale: 0.01}" 
-						    			label="AMT">
-						    		</knob>
-						    	</div>
-						    </div>
 						</div>
 					</div>
-					<!-- <div class="filter">
-						<div class="spacer"></div>
-						<div class="header">
-							<p>VCF ENVELOPE</p>
-						</div>
-						<div class="controls">
-							<knob value="chunky.vcfEnvelope.attack" 
-								min="chunky.vcfEnvelope.meta.params.attack.min"
-				            	max="chunky.vcfEnvelope.meta.params.attack.max"
-				            	scale="0.1"
-				            	speed="0.5"
-								options="{min:0, max:4, scale:0.01, class:'knob-default', speed:0.1}" label="ATK"></knob>
-							<knob value="chunky.vcfEnvelope.decay" options="{min:0, max:4, scale:0.01, class:'knob-default', speed:0.1}" label="DCY"></knob>
-							<knob value="chunky.vcfEnvelope.sustain" options="{min:0, max:1, scale:0.01, class:'knob-default', speed:0.1}" label="SUS"></knob>
-							<knob value="chunky.vcfEnvelope.release" options="{min:0, max:1, scale:0.01, class:'knob-default', speed:0.1}" label="REL"></knob>
-						</div>
-					</div> -->
 				</div>
+				<!-- OSCILLOSCOPE -->
 				<div class="module" style="padding:0; border-radius:5px;">
 					<oscilloscope analyser="chunky.analyser" width="10" height="87" style="border-radius:3px;"></oscilloscope>
 				</div>
 			</div>
 			<div class="col-md-6">
+				<!-- AMP -->
 				<div class="module">
 					<div class="header">
 						<p>AMP</p>
@@ -204,18 +151,9 @@
 							class="knob-default"
 							options="{min:0, max:1.2, scale: 0.01, speed:0.1}"></knob>
 					</div>
-					<!-- <div class="spacer"></div>
-					<div class="header">
-				  		<p>VCA ENVELOPE</p>
-				  	</div>
-				  	<div class="controls">
-						<knob value="chunky.vcfEnvelope.attack" options="{min:0, max:4, scale:0.01, class:'knob-default', speed:0.1}" label="ATK"></knob>
-						<knob value="chunky.vcfEnvelope.decay" options="{min:0, max:4, scale:0.01, class:'knob-default', speed:0.1}" label="DCY"></knob>
-						<knob value="chunky.vcfEnvelope.sustain" options="{min:0, max:3, scale:0.01, class:'knob-default', speed:0.1}" label="SUS"></knob>
-						<knob value="chunky.vcfEnvelope.release" options="{min:0, max:1, scale:0.01, class:'knob-default', speed:0.1}" label="REL"></knob>
-					</div> -->
 				</div>
 				<div class="module">
+					<!-- DISTORTION -->
 					<div class="effect">
 					  	<div class="header">
 					  		<label>
@@ -247,8 +185,9 @@
 							class="knob-default"></knob>
 						</div>
 					</div>
-					<div class="spacer"></div>
+					<!-- REVERB -->
 				  	<div class="effect">
+						<div class="spacer"></div>
 				  		<div class="header">
 				  			<label>
 				  				<input data-ng-click="chunky.reverb.toggleEnabled()" class="enabled" type="checkbox"/>
@@ -276,15 +215,6 @@
 							</knob>
 						</div>
 					</div>
-					<!-- <div class="effect">
-						<div class="header">
-							<p class="label">PREVIEW</p>
-						</div>
-						<div class="controls">
-							<button data-ng-click="chunky.play()">Play</button>
-							<button data-ng-click="chunky.stop()">Stop</button>
-						</div>
-					</div> -->
 				</div>
 			</div>
 		</div>
@@ -438,9 +368,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div class="module">
-				<oscilloscope analyser="chunky.analyser" width="385" height="173"></oscilloscope>
-			</div> -->
 		</div>
 	</div>
 </div>
@@ -453,7 +380,8 @@
 	<h2>TODOS</h2>
 	<P>FIX BUGS :D</P>
 	<P>ADD MORE WAVE TYPES TO OSCILLATORS</P>
-	<P>ADD POLYPHONY (VOICES) QUESTION - IS VOICE LIMIT USER SELECTABLE?</P>
+	<P>ADD POLYPHONY (VOICES) --DONE!--</P>
+	<P>ADD MIDI AND NOTE VELOCITY SUPPORT</P>
 	<P>ADD INSERTS FOR EFFECTS (I HAVE ALREADY CREATED/REPLICATED A NUMBER OF EFFECTS) :D</P>
 	<p>ADD MULTITOUCH SUPPORT</p>
 	<P>CREATE MODULATION OSC (NOT AN LFO BUT A HFO FOR RINGMOD AND SUCH)</P>

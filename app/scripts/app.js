@@ -37,6 +37,7 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
 
       // make life easier
       this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
+      this.filters = [this.vcf, this.vcf2];
       this.envelopes = [this.vcfEnvelope, this.vcaEnvelope, this.env1, this.env2];
 
       // basic config
@@ -97,7 +98,13 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
           // }
 
           for(i = 0; i < this.oscs.length; i++) {
-            this.oscs[i].stop(note, freq);
+            if (this.oscs[i].type === 'oscillator') {
+              this.oscs[i].stop(note, freq);
+            } else {
+              if (Object.keys(this.voices).length < 1) {
+                this.oscs[i].stop(note, freq);
+              }
+            }
           }
         }
       },

@@ -38,10 +38,38 @@ angular.module('chunky')
       this.inverted = false;
       this.reTrigger = false;
 
-      this.params = [];
+      this.targets = [];
     };
     
     Envelope.prototype = Object.create(null, {
+      params: {
+        value: {
+          attack: {
+            name: 'attack',
+            label: 'ATK',
+            min: 0,
+            max: 50000,
+          },
+          decay: {
+            name: 'decay',
+            label: 'DCY',
+            min: 0,
+            max: 50000,
+          },
+          sustain: {
+            name: 'sustain',
+            label: 'SUS',
+            min: 0,
+            max: 100,
+          },
+          release: {
+            name: 'release',
+            label: 'REL',
+            min: 0,
+            max: 50000,
+          }
+        }
+      },
       connect: {
         value: function(target, param, meta) {
           var finalTarget;
@@ -56,7 +84,7 @@ angular.module('chunky')
           
           target.envelope = moddableParam;
 
-          this.params.push(moddableParam);
+          this.targets.push(moddableParam);
 
           return moddableParam;
         }
@@ -115,8 +143,8 @@ angular.module('chunky')
         value: function() {
           var now = this.ctx.currentTime;
 
-          for (var i = 0; i < this.params.length; i++) {
-            this.processTriggerOn(this.params[i], now);
+          for (var i = 0; i < this.targets.length; i++) {
+            this.processTriggerOn(this.targets[i], now);
           }
         }
       },
@@ -144,12 +172,12 @@ angular.module('chunky')
       triggerOff: {
         value: function() {
           var now = this.ctx.currentTime;
-          for (var i = 0; i < this.params.length; i++) {
+          for (var i = 0; i < this.targets.length; i++) {
             // Release the note or param or whatever the fuck is being played
             // (in theory this should really delay the note stop at current... it doesnt!!)
-            this.params[i].target.linearRampToValueAtTime(0, now + this.release);
-            this.params[i].target.linearRampToValueAtTime(0, now + this.release + 0.01);
-            this.params[i].target.cancelScheduledValues(0, now + this.release + 0.02);
+            this.targets[i].target.linearRampToValueAtTime(0, now + this.release);
+            this.targets[i].target.linearRampToValueAtTime(0, now + this.release + 0.01);
+            this.targets[i].target.cancelScheduledValues(0, now + this.release + 0.02);
           }
         }
       }

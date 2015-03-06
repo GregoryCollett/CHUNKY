@@ -7,7 +7,8 @@ angular.module('chunky')
 			template: '<canvas></canvas>',
 			replace: true,
 			scope: {
-				params: '='
+				params: '=',
+				inverted: '='
 			},
 			link: function(scope, elem, attrs) {
 				var cvs = elem,
@@ -27,21 +28,26 @@ angular.module('chunky')
 
             		ctx.clearRect(0,0,w,h);
 			        ctx.lineWidth = 2;
+			        ctx.beginPath();
 
-            		ctx.beginPath();
+            		if (!scope.inverted) {
 
-            		ctx.moveTo(w4 * (1.0 - scope.params.attack), h);
+	            		ctx.moveTo(w4 * (1.0 - scope.params.attack), h);
 
-			        ctx.lineTo(w / 4,0);
-			        //console.log('1', w / 4,0);
-			        ctx.lineTo(w4 * (scope.params.decay + 1), h * (1.0 - scope.params.sustain));
-			        //console.log('2',w4 * (scope.params.attack + 1), h * (1.0 - scope.params.decay))
-			        ctx.lineTo(w4 * 3, h * (1.0 - scope.params.sustain));
-			        //console.log('3',w4 * 3, h * (1.0 - scope.params.sustain));
-			        ctx.lineTo(w4 * (scope.params.release + 3), h);
-			        //console.log('4', w4 * (scope.params.release + 3), h);
+				        ctx.lineTo(w4, 0);
+				        ctx.lineTo(w4 * (scope.params.decay + 1), h * (1.0 - scope.params.sustain));
+				        ctx.lineTo(w4 * 3, h * (1.0 - scope.params.sustain));
+				        ctx.lineTo(w4 * (scope.params.release + 3), h);				  
+	        		} else {
+	        			ctx.moveTo(w4 * (1.0 - scope.params.attack), 0);
 
-			        ctx.strokeStyle = 'rgb(196,221,232)';
+				        ctx.lineTo(w4, h);
+				        ctx.lineTo(w4 * (scope.params.decay + 1), h * (1.0 - scope.params.sustain));
+				        ctx.lineTo(w4 * 3, h * (1.0 - scope.params.sustain));
+				        ctx.lineTo(w4 * (scope.params.release + 3), 0);	
+	        		}
+
+	        		ctx.strokeStyle = 'rgb(196,221,232)';
         			ctx.stroke();
             	}
 
