@@ -142,7 +142,7 @@ angular.module('chunky', ['ngRoute','ui.bootstrap'])
 
     Chunky.isEmpty = function(obj) {
       return Object.keys(obj).length === 0;
-    }
+    };
 
     return new Chunky(audioCtx);
   })
