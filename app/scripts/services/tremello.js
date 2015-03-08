@@ -14,7 +14,7 @@ angular.module('chunky')
 		Tremello.prototype = Object.create(null, {
 			connect: {
 				value: function(target) {
-					this.output.connect(target.input ? target.input : target)
+					this.output.connect(target.input ? target.input : target);
 				}
 			},
 			disconnect: {

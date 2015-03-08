@@ -20,8 +20,7 @@ angular.module('chunky')
 
             	// This is temporary and should be user defined in the users stylesheet!
         		cvs.css('background-color', 'rgba(9,12,21,0.6)')
-        			.css('border', '1px solid rgb(57,64,72)')
-        			.css('margin-top', '5px');
+        			.css('border', '1px solid rgb(57,64,72)');
 
             	function draw() {
             		var drawVisual = requestAnimationFrame(draw);

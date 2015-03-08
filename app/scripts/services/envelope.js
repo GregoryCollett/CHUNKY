@@ -1,42 +1,22 @@
 'use strict';
 
 angular.module('chunky')
-  .factory('Envelope', function() {
-    var EnvelopeParam = function EnvelopeParam(cfg) {
-      this.parent = cfg.parent || null;
-      this.target = cfg.target || null;
-      this.meta = cfg.meta || {};
-      this.range = cfg.range || this.params.range.defaultValue;
-    };
-    EnvelopeParam.prototype = Object.create(null, {
-      range: {
-        get: function() {
-          return [this.min, this.max];
-        },
-        set: function(range) {
-          this.min = parseFloat(range[0]);
-          this.max = parseFloat(range[1]);
-        }
-      },
-      params: {
-        value: {
-          range: {
-            defaultValue: [0, 1]
-          }
-        }
-      }
-    });
+  .factory('Envelope', function(EnvelopeParam) {
 
-    var Envelope = function Envelope(ctx) {
+    var Envelope = function Envelope(ctx, cfg) {
+      cfg = cfg || {};
+
       this.ctx = ctx;
       
-      this.attack = 1000;
-      this.decay = 50000.0;
-      this.sustain = 100;
-      this.release = 1000;
+      this.name = cfg.name || 'ENV';
+
+      this.attack = cfg.attack || 1000;
+      this.decay = cfg.decay || 50000.0;
+      this.sustain = cfg.sustain || 100;
+      this.release = cfg.release || 1000;
       
-      this.inverted = false;
-      this.reTrigger = false;
+      this.inverted = cfg.inverted || false;
+      this.reTrigger = cfg.reTrigger || false;
 
       this.targets = [];
     };

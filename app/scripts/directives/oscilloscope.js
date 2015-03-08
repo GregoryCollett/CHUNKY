@@ -15,23 +15,22 @@ angular.module('chunky')
             ctx = cvs.getContext('2d'),
             bufferLength = scope.analyser.fftSize,
             data = new Uint8Array(bufferLength);
-        
-        cvs.width = parent[0].offsetWidth;
+
         scope.analyser.getByteTimeDomainData(data);
         
         var draw = function () {
           var drawVisual = requestAnimationFrame(draw);
           
           scope.analyser.getByteTimeDomainData(data);
-          
-          ctx.fillStyle = 'rgb(200, 200, 200)';
+          ctx.clearRect(0,0,cvs.width,cvs.height);
+          ctx.fillStyle = 'rgba(115, 116, 137, 0)';
           ctx.fillRect(0, 0, cvs.width, cvs.height);
           ctx.lineWidth = 2;
-          ctx.strokeStyle = 'rgb(0, 0, 0)';
+          ctx.strokeStyle = 'rgba(115, 116, 137, 0.73)';
 
           ctx.beginPath();
           
-          var sliceWidth = cvs.width * 10 / bufferLength;
+          var sliceWidth = cvs.width * 2 / bufferLength;
           var x = 0;
           
           for(var i = 0; i < bufferLength; i++) {

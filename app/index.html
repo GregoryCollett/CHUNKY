@@ -2,8 +2,8 @@
 <html class="no-js" ng-app="chunky">
   <head>
     <meta charset="utf-8">
-    <title></title>
-    <meta name="description" content="">
+    <title>CHUNKY WEB SYNTHESIZER</title>
+    <meta name="description" content="CHUNKY WEB SYNTHESIZER UTILIZES WEB AUDIO API AND USES ANGULAR FOR NICE TWO WAY BINDING ON PARAMS">
     <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,user-scalable=no">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
@@ -15,6 +15,7 @@
     <!-- endbuild -->
   </head>
   <body data-ng-controller="chunkyController" kill-right-click>
+    <oscilloscope analyser="chunky.analyser" class="background"></oscilloscope>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -56,7 +57,9 @@
     <script src="scripts/services/audio-ctx.js"></script>
     <script src="scripts/services/oscillator.js"></script>
     <script src="scripts/services/noise.js"></script>
+    <script src="scripts/services/comb-filter.js"></script>
     <script src="scripts/services/filter.js"></script>
+    <script src="scripts/services/envelope-param.js"></script>
     <script src="scripts/services/envelope.js"></script>
     <script src="scripts/services/lfo.js"></script>
     <script src="scripts/services/reverb.js"></script>
