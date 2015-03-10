@@ -141,6 +141,24 @@ angular.module('chunky')
             this.wet.gain.value = 0;
           }
         }
+      },
+      cfg: {
+        get: function() {
+          return {
+            enabled: this.enabled,
+            preBand: this.preBand,
+            colour: this.colour,
+            drive: this.drive,
+            postCut: this.postCut
+          };
+        },
+        set: function(cfg) {
+          this.enabled = cfg.enabled;
+          this.preBand = cfg.preBand;
+          this.colour = cfg.colour;
+          this.drive = cfg.drive;
+          this.postCut = cfg.postCut;
+        }
       }
     });
   

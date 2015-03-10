@@ -160,6 +160,26 @@ angular.module('chunky')
             this.targets[i].target.cancelScheduledValues(0, now + this.release + 0.02);
           }
         }
+      },
+      cfg: {
+        get: function() {
+          return {
+            attack: this.attack,
+            decay: this.decay,
+            sustain: this.sustain,
+            release: this.release,
+            reTrigger: this.reTrigger,
+            inverted: this.inverted
+          };
+        },
+        set: function(cfg) {
+          this._attack = cfg.attack;
+          this._decay = cfg.decay;
+          this._sustain = cfg.sustain;
+          this._release = cfg.release;
+          this.reTrigger = cfg.reTrigger;
+          this.inverted = cfg.inverted;
+        }
       }
     });
     

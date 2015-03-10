@@ -49,6 +49,7 @@ angular.module('chunky')
           //this.osc.start(0);
         }
       },
+      // this method should also take a velocity going forward
       start: {
         value: function(note, freq) {
           this.frequency = freq;
@@ -141,6 +142,24 @@ angular.module('chunky')
           } else {
             this.node.gain.setValueAtTime(0, 0);
           }
+        }
+      },
+      cfg: {
+        get: function() {
+          return {
+            enabled: this.enabled,
+            shape: this.shape,
+            octave: this.octave,
+            fine: this.fine,
+            gain: this.gain
+          };
+        },
+        set: function(cfg) {
+          this.enabled = cfg.enabled;
+          this.shape = cfg.shape;
+          this.octave = cfg.octave;
+          this.fine = cfg.fine;
+          this.gain = cfg.gain;
         }
       }
     });

@@ -118,6 +118,18 @@ angular.module('chunky')
 					this._type = type;
 					this.node.onaudioprocess = NoiseTypes[type];
 				}
+			},
+			cfg: {
+				get: function() {
+					return {
+						generator: this.generator,
+						gain: this.gain
+					};
+				},
+				set: function(cfg) {
+					this.generator = cfg.generator;
+					this.gain = cfg.gain;
+				}
 			}
 		});
 

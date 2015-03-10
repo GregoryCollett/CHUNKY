@@ -101,6 +101,20 @@ angular.module('chunky')
           this._decay = decay;
           this.buildImpulse();
         }
+      },
+      cfg: {
+        get: function() {
+          return {
+            enabled: this.enabled,
+            seconds: this.seconds,
+            decay: this.decay
+          };
+        },
+        set: function(cfg) {
+          this.decay = cfg.decay;
+          this.seconds = cfg.seconds;
+          this.decay = cfg.decay;
+        }
       }
     });
   

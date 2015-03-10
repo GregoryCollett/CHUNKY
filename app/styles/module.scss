@@ -42,6 +42,7 @@ input[type="checkbox"].enabled {
 	bottom: 0;
 	top: 0;
 	right: 0;
+	border-radius: 5px;
 	padding: 20% 0 !important;
 }
 .module {
@@ -50,8 +51,53 @@ input[type="checkbox"].enabled {
 	margin:1px;
 	border-radius:3px;
 	background-color: rgba(210,219,232,1);
-	@include background-image(linear-gradient(top, rgba(210,219,232,1) 0%, rgba(181,187,203,1) 100%));
+	@include background-image(linear-gradient(rgba(210,219,232,1) 0%, rgba(181,187,203,1) 100%));
 	padding: 0 5px;
+	&.patch-bay {
+		@include background-image(linear-gradient(#5D5D5D 0%, #434343 100%));
+		padding: 5px;
+		h1 {
+			margin: 0;
+			color: #9F9F9F;
+			text-shadow: -2px 0px black;
+		}
+		p {
+			margin-top:12px;
+			color: #9F9F9F;
+			text-align: center;
+			text-shadow: -1px 0px black;
+		}
+		.controls {
+			margin-bottom:0;
+			padding: 0;
+			display: block;
+			select {
+				width: 100%;
+				background: transparent;
+				border: none;
+				height: 39px;
+				padding: 0 0 0 10px;
+				outline:none;
+				&:focus {
+					outline:none;
+				}
+			}
+			.btn-save {
+				width:100%;
+				border-radius: 0 5px 5px 0;
+				background: rgba(0,0,0, 0.7);
+				height: 39px;
+				outline:none;
+				color:#737489;
+				&:focus {
+					outline:none;
+				}
+				&:hover {
+					color: lighten(#737489, 5%)
+				}
+			}
+		}
+	}
 	.header {
 	  display:flex;
 	  p {
@@ -92,11 +138,11 @@ input[type="checkbox"].enabled {
 	  display: -webkit-box;
 	  border-radius: 5px;
 	  background-color: rgba(52,58,74,1);
-	  @include background-image(linear-gradient(top, rgba(52,58,74,1) 0%, rgba(53,59,80,1) 49%, rgba(28,34,54,1) 100%));
+	  @include background-image(linear-gradient(rgba(52,58,74,1) 0%, rgba(53,59,80,1) 49%, rgba(28,34,54,1) 100%));
 	  margin: 0 0 5px;
-	  -webkit-box-shadow: inset 0px 0px 56px 16px rgba(0,0,0,0.75);
-	  -moz-box-shadow: inset 0px 0px 56px 16px rgba(0,0,0,0.75);
-	  box-shadow: inset 0px 0px 96px 56px rgba(0,0,0,0.75);
+	  -webkit-box-shadow: inset 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+	  -moz-box-shadow: inset 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+	  box-shadow: inset 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
 	  .param {
 	      background: #313A4A;
 	      padding: 2px 15px 10px;

@@ -16,13 +16,12 @@ angular.module('chunky')
       var params = this.meta.params;
       cfg = cfg || {};
 
-      this._type = cfg.type || params.type.defaultValue;
-      this._filter.frequency.value  = cfg.frequency || params.frequency.defaultValue;
-      this._filter.Q.value = cfg.resonance || params.resonance.defaultValue;
-      this._filter.gain.value = cfg.gain || params.gain.defaultValue;
-      this._wet.gain.value = cfg.wet || params.wet.defaultValue;
-      this._dry.gain.value = cfg.dry || params.dry.defaultValue;
-      this._filter.type = this._type;
+      this.type = cfg.type || params.type.defaultValue;
+      this.frequency  = cfg.frequency || params.frequency.defaultValue;
+      this.resonance = cfg.resonance || params.resonance.defaultValue;
+      this.gain = cfg.gain || params.gain.defaultValue;
+      this.wet = cfg.wet || params.wet.defaultValue;
+      this.dry = cfg.dry || params.dry.defaultValue;
 
       this.input.connect(this._filter);
       this._filter.connect(this._wet);
@@ -93,6 +92,15 @@ angular.module('chunky')
           this._envelope.range = [80, Math.pow(this.frequency/1000, 2.0) * 25000 + 80];
         }
       },
+      type: {
+        enumerable: true,
+        get: function() {
+          return this._filter.type;
+        },
+        set: function(type) {
+          this._filter.type = type;
+        }
+      },
       frequency: {
         enumerable: true,
         get: function() {
@@ -149,6 +157,22 @@ angular.module('chunky')
             this._dry.gain.setValueAtTime(1, 0);
             this._wet.gain.setValueAtTime(0, 0);
           }
+        }
+      },
+      cfg: {
+        get: function() {
+          return {
+            type: this.type,
+            frequency: this.frequency,
+            resonance: this.resonance,
+            gain: this.gain
+          };
+        },
+        set: function(cfg) {
+          this.type = cfg.type;
+          this.frequency = cfg.frequency;
+          this.resonance = cfg.resonance;
+          this.gain = cfg.gain;
         }
       }
     });
