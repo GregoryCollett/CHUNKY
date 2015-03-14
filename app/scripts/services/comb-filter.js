@@ -109,4 +109,4 @@ angular.module('chunky')
 		});
 
 		return CombFilter;
-	})
+	});

@@ -24,6 +24,13 @@
     }
   }
   &.knob-default {
+    &.knob-small {
+      .knob-face {
+        width: 2em;
+        height: 2em;
+        margin: 0 auto;
+      }
+    }
     &.holding {
       .knob-face {
         -webkit-box-shadow: #6296c7 0px 0px 3px 2px;

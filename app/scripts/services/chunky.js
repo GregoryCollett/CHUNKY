@@ -1,7 +1,18 @@
 'use strict';
 
 angular.module('chunky')
-  .service('chunkySynth', function(audioCtx, Oscillator, Filter, Envelope, Distortion, Reverb, LFO, Noise, CombFilter, Patches) {
+  .service('chunkySynth', function(
+    audioCtx, 
+    Oscillator, 
+    Filter, 
+    Envelope, 
+    Distortion, 
+    Reverb, 
+    LFO, 
+    Noise, 
+    CombFilter, 
+    Patches, 
+    BitCrusher) {
     var Chunky = function Chunky(ctx) {
       var self = this;
 
@@ -36,6 +47,8 @@ angular.module('chunky')
       this.master = this.ctx.createGain();
       this.limiter = this.ctx.createDynamicsCompressor();
       this.analyser = this.ctx.createAnalyser();
+      
+      this.bitCrusher = new BitCrusher(this.ctx);
 
       // make life easier
       this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
@@ -71,7 +84,7 @@ angular.module('chunky')
       this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
       this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
       //this.vcfEnvelope.connect(this.comb, ['_filter','frequency']);
-      this.vcaEnvelope.connect(this.master, 'gain');
+      this.vcaEnvelope.connect(this.master, 'gain', {range:[0, 2]});
       // this.lfo = new LFO(this.ctx, {
       //   target: this.vcf2._filter.frequency, 
       //   callback: function(param, value) {
@@ -85,13 +98,14 @@ angular.module('chunky')
     Chunky.prototype = Object.create(null, {
       playNote: {
         value: function(note, freq) {
-          var i;
+          var i,
+              now = this.ctx.currentTime;
 
           this.voices[note] = freq;
           
           for (i = 0; i < this.envelopes.length; i++) {
             if (!this.envelopes[i].reTrigger && Object.keys(this.voices).length === 1 || this.envelopes[i].reTrigger) {
-              this.envelopes[i].triggerOn();
+              this.envelopes[i].triggerOn(now);
             }
           }
 
@@ -102,13 +116,14 @@ angular.module('chunky')
       },
       stop: {
         value: function(note, freq) {
-          var i;
+          var i,
+              now = this.ctx.currentTime;
 
           delete this.voices[note];
 
-          // for (i = 0; i < this.envelopes.length; i++) {
-          //   this.envelopes[i].triggerOff();
-          // }
+          for (i = 0; i < this.envelopes.length; i++) {
+            this.envelopes[i].triggerOff(now);
+          }
 
           for(i = 0; i < this.oscs.length; i++) {
             if (this.oscs[i] instanceof Oscillator) {
@@ -132,35 +147,33 @@ angular.module('chunky')
       },
       loadPatch: {
         value: function(patch) {
-			var i ;
-			for (i = 0; i < this.oscs.length; i++) {
-				if (this.oscs[i] instanceof Oscillator) {
-				  this.oscs[i].cfg = patch.oscillators[i]
-				} else {
-				  patch.noise = this.oscs[i].cfg;
-				}
-			}
+  			  var i ;
+    			for (i = 0; i < this.oscs.length; i++) {
+    				if (this.oscs[i] instanceof Oscillator) {
+    				  this.oscs[i].cfg = patch.oscillators[i];
+    				} else {
+    				  patch.noise = this.oscs[i].cfg;
+    				}
+    			}
 
-			this.noise.cfg = patch.noise;
+    			this.noise.cfg = patch.noise;
 
-			this.vcfMix = patch.vcfMix;
+    			this.vcfMix = patch.vcfMix;
 
-			for (i = 0; i < this.filters.length; i++) {
-				this.filters[i].cfg = patch.filters[i];
-			}
+    			for (i = 0; i < this.filters.length; i++) {
+    				this.filters[i].cfg = patch.filters[i];
+    			}
 
-			for (i = 0; i < this.envelopes.length; i++) {
-				this.envelopes[i].cfg = patch.envelopes[i];
-				
-				console.log(this.envelopes[i], patch.envelopes[i]);
-			}
+    			for (i = 0; i < this.envelopes.length; i++) {
+    				this.envelopes[i].cfg = patch.envelopes[i];				
+    			}
 
-			for (i = 0; i < this.lfos.length; i++) {
-				this.lfos[i].cfg = patch.lfos[i];
-			}
+    			for (i = 0; i < this.lfos.length; i++) {
+    				this.lfos[i].cfg = patch.lfos[i];
+    			}
 
-			this.distortion.cfg = patch.distortion;
-			this.reverb.cfg = patch.reverb;
+    			this.distortion.cfg = patch.distortion;
+    			this.reverb.cfg = patch.reverb;
         }
       },
       savePatch: {
@@ -211,6 +224,16 @@ angular.module('chunky')
           this._vcfMix = val;
           this.vcf.input.gain.value = parseFloat(val);
           this.vcf2.input.gain.value = parseFloat(1 - val);
+        }
+      },
+      masterGain: {
+        enumberable: true,
+        get: function() {
+          return this.master.gain.value;
+        },
+        set: function(master) {
+          this.master.gain.setValueAtTime(master, 0);
+          this.master.envelope.range = [0, master];
         }
       },
       glide: {

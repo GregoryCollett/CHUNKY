@@ -50,15 +50,16 @@ angular.module('chunky')
         value: {
           params: {
             frequency: {
-              min: 30,
-              max: 22050,
-              defaultValue: 300,
+              min: 0,
+              max: 1000,
+              step: 0.5,
+              defaultValue: 0.1,
               type: 'float'
             },
             resonance: {
-              min:0.0001,
-              max: 20,
-              defaultValue: 1,
+              min: 0,
+              max: 40,
+              defaultValue: 0,
               type: 'float'
             },
             gain: {
@@ -89,7 +90,7 @@ angular.module('chunky')
         },
         set: function(envelope) {
           this._envelope = envelope;
-          this._envelope.range = [80, Math.pow(this.frequency/1000, 2.0) * 25000 + 80];
+          this._envelope.range = [30, this._frequency];
         }
       },
       type: {
@@ -107,9 +108,10 @@ angular.module('chunky')
           return this._filter.frequency.value;
         },
         set: function(freq) {
-          this._filter.frequency.setValueAtTime(freq, 0);
+          this._frequency = Math.pow(freq/1000, 2.0) * 25000 + 30;
+          this._filter.frequency.setValueAtTime(this._frequency, 0);
           if (this._envelope && this._envelope.range) {
-            this._envelope.range = [80, Math.pow(freq/1000, 2.0) * 25000 + 80];
+            this._envelope.range = [30, this._frequency];
           }
         }
       },

@@ -1,18 +1,19 @@
 'use strict';
 
 angular.module('chunky')
-  .factory('Oscillator', function() {
+  .factory('Oscillator', function(FrequencyModulator) {
     var isEmpty = function(obj) {
       return Object.keys(obj).length === 0;
     };
     //var Oscillator = function Oscillator(ctx, cfg) {
     var Oscillator = function Oscillator(ctx, cfg) {
-      cfg = cfg || {};
+      cfg = cfg || {fm:{type:'sine', gain: 300, frequency: 400}};
 
       this.ctx = ctx;
       this.type = 'oscillator';
 
       this.voices = {};
+      this._fm = cfg.fm || {type:'sine', gain: 300, frequency: 400};
 
       this.controlNode = ctx.createGain();
       this.node = this.ctx.createGain();
@@ -56,10 +57,16 @@ angular.module('chunky')
 
           var now = this.ctx.currentTime;
           
+          this._fm.frequency = this.frequency * 2;
+          var fm = new FrequencyModulator(this.ctx, this._fm);
           var osc = this.ctx.createOscillator();
+
+          osc.fm = fm;
           osc.type = this.shape;
           osc.frequency.value = this.frequency;
           osc.detune.value = this.fine;
+
+          fm.connect(osc.frequency);
           osc.connect(this.controlNode);
           osc.start(0);
 
@@ -71,6 +78,7 @@ angular.module('chunky')
       },
       stop: {
         value: function(note, freq) {
+          this.voices[note].fm.disconnect();
           this.voices[note].disconnect();
 
           delete this.voices[note];
@@ -141,6 +149,42 @@ angular.module('chunky')
             this.node.gain.setValueAtTime(1, 0);
           } else {
             this.node.gain.setValueAtTime(0, 0);
+          }
+        }
+      },
+      fmType: {
+        enumerable: true,
+        get: function() {
+          return this._fm.type;
+        },
+        set: function(type) {
+          this._fm.type = type;
+          for(var voice in this.voices) {
+            this.voices[voice].fm.type = this._fm.type;
+          }
+        }
+      },
+      fmGain: {
+        enumerable: true,
+        get: function() {
+          return this._fm.gain;
+        },
+        set: function(gain) {
+          this._fm.gain = gain;
+          for(var voice in this.voices) {
+            this.voices[voice].fm.gain = this._fm.gain;
+          }
+        }
+      },
+      fmFrequency: {
+        enumerable: true,
+        get: function() {
+          return this._fm.frequency;
+        },
+        set: function(frequency) {
+          this._fm.frequency = frequency;
+          for(var voice in this.voices) {
+            this.voices[voice].fm.frequency = this.voices[voice].frequency + this._fm.frequency;
           }
         }
       },

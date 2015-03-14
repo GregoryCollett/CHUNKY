@@ -6,7 +6,7 @@ angular.module('chunky')
       this.parent = cfg.parent || null;
       this.target = cfg.target || null;
       this.meta = cfg.meta || {};
-      this.range = cfg.range || this.params.range.defaultValue;
+      this.range = this.meta.range || this.params.range.defaultValue;
     };
     
     EnvelopeParam.prototype = Object.create(null, {
@@ -22,7 +22,7 @@ angular.module('chunky')
       params: {
         value: {
           range: {
-            defaultValue: [0, 1]
+            defaultValue: [0, 100]
           }
         }
       }

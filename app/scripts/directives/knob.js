@@ -82,7 +82,7 @@ angular.module('chunky')
 			var handPos = (movingFace.width() / 2) - (hand.width() / 2);
 			hand
 				.css('position', 'absolute')
-				.css('left', '15px')
+				.css('left', '50%')
 				.css('height', movingFace.innerHeight() / 2);
 
 			var mouse = {},

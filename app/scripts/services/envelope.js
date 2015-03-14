@@ -120,8 +120,7 @@ angular.module('chunky')
         }
       },
       triggerOn: {
-        value: function() {
-          var now = this.ctx.currentTime;
+        value: function(now) {
 
           for (var i = 0; i < this.targets.length; i++) {
             this.processTriggerOn(this.targets[i], now);
@@ -135,7 +134,7 @@ angular.module('chunky')
             param.target.cancelScheduledValues(now);
             param.target.setValueAtTime(param.min, now);
             // Attack to max value
-            param.target.exponentialRampToValueAtTime(param.max, now + this.attack);
+            param.target.linearRampToValueAtTime(param.max, now + this.attack);
             // Decay and Sustain (for now :D)
             param.target.linearRampToValueAtTime(this.sustain * (param.max - param.min) + param.min, (now + this.attack + this.decay));
           } else {
@@ -150,8 +149,7 @@ angular.module('chunky')
         }
       },
       triggerOff: {
-        value: function() {
-          var now = this.ctx.currentTime;
+        value: function(now) {
           for (var i = 0; i < this.targets.length; i++) {
             // Release the note or param or whatever the fuck is being played
             // (in theory this should really delay the note stop at current... it doesnt!!)

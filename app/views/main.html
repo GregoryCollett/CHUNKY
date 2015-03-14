@@ -46,6 +46,12 @@
 							<option value="sawtooth">SAW</option>
 							<option value="triangle">TRI</option>
 						</select>
+						<select data-ng-model="osc.fmType" class="oscillator-type">
+							<option value="sine">SIN</option>
+							<option value="square">SQR</option>
+							<option value="sawtooth">SAW</option>
+							<option value="triangle">TRI</option>
+						</select>
 					</div>
 					<div class="controls">
 						<div class="control-pitch">
@@ -67,6 +73,16 @@
 							class="knob-default"
 							options="{min:0, max:1, scale:0.01, class:'knob-default', speed:0.1}">
 						</knob>
+						<knob value="osc.fmGain" 
+							label="FM GN"
+							class="knob-default knob-small"
+							options="{min:-1000, max:1000, scale:0.5, class:'knob-default'}">
+						</knob>
+						<!-- <knob value="osc.fmFrequency" 
+							label="FM FQ"
+							class="knob-default knob-small"
+							options="{min:0, max:1000, scale:1, class:'knob-default'}">
+						</knob> -->
 					</div>
 				</div>
 			</div>
@@ -168,19 +184,19 @@
 							            <knob value="filter.frequency" 
 							            	min="filter.meta.params.frequency.min"
 							            	max="filter.meta.params.frequency.max"
-							            	scale="1"
-							            	speed="1"
+							            	scale="0.1"
+							            	speed="0.5"
 							            	class="knob-default"
-							            	options="{min:80, max:500, scale: 0.1, class:'knob-default', speed: 0.1}" 
+							            	options="{min:0, max:1, scale: 0.001, class:'knob-default', speed: 0.1}" 
 							            	label="CUT">
 							            </knob>
 							            <knob value="filter.resonance" 
 							            	min="filter.meta.params.resonance.min"
 							            	max="filter.meta.params.resonance.max"
 							            	scale="0.1"
-							            	speed="0.5"
+							            	speed="1"
 							            	class="knob-default"
-							            	options="{min:0, max:40, class:'knob-default', speed: 0., scale: 0.1}" 
+							            	options="{min:0, max:1, class:'knob-default', speed: 0., scale: 0.001}" 
 							            	label="RES">
 							            </knob>
 							        </div>
@@ -273,7 +289,7 @@
 									label="PAN" 
 									class="knob-default"
 									options="{min:0, max:1, scale: 0.01, speed:0.1}"></knob>
-								<knob value="chunky.master.gain.value" 
+								<knob value="chunky.masterGain" 
 									label="MASTER" 
 									class="knob-default"
 									options="{min:0, max:1.2, scale: 0.01, speed:0.1}"></knob>
@@ -343,13 +359,13 @@
 												<knob label="ATK" 
 													class="knob-classic"
 													value="chunky.vcaEnvelope.attack" 
-													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
+													options="{min:0, max:50000, step: 5, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
 												<knob label="DEC"
 													class="knob-classic" 
 													value="chunky.vcaEnvelope.decay" 
-													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
+													options="{min:0.1, max:50000, step: 5, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
 												<knob label="SUS" 
@@ -361,7 +377,19 @@
 												<knob label="REL"
 													class="knob-classic" 
 													value="chunky.vcaEnvelope.release" 
-													options="{min:0.001, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
+													options="{min:0.001, max:50000, step: 5, speed: 3, class: 'knob-classic'}"></knob>
+											</div>
+											<div class="param">
+												<p class="label">
+													RETRIG
+												</p>
+													<input data-ng-model="chunky.vcaEnvelope.reTrigger" class="enabled retrig" type="checkbox"/>
+											</div>
+											<div class="param">
+												<p class="label">
+													INVERT
+												</p>
+													<input data-ng-model="chunky.vcaEnvelope.inverted" class="enabled retrig" type="checkbox"/>
 											</div>
 										</div>
 									</tab>
@@ -394,6 +422,18 @@
 													class="knob-classic"
 													options="{min:0.001, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
+											<div class="param">
+												<p class="label">
+													RETRIG
+												</p>
+													<input data-ng-model="chunky.env1.reTrigger" class="enabled retrig" type="checkbox"/>
+											</div>
+											<div class="param">
+												<p class="label">
+													INVERT
+												</p>
+													<input data-ng-model="chunky.env1.inverted" class="enabled retrig" type="checkbox"/>
+											</div>
 										</div>
 									</tab>
 									<tab heading="ENV 2" class="env">
@@ -412,6 +452,18 @@
 											</div>
 											<div class="param">
 												<knob label="REL" value="chunky.env2.release" class="knob-classic" options="{min:0.001, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
+											</div>
+											<div class="param">
+												<p class="label">
+													RETRIG
+												</p>
+													<input data-ng-model="chunky.env2.reTrigger" class="enabled retrig" type="checkbox"/>
+											</div>
+											<div class="param">
+												<p class="label">
+													INVERT
+												</p>
+													<input data-ng-model="chunky.env2.inverted" class="enabled retrig" type="checkbox"/>
 											</div>
 										</div>
 									</tab>
@@ -476,7 +528,7 @@
 </div>
 <div class="intro">
 	<h1>CHUNKY WS</h1>
-	<small>(WEB SYNTHESIZER - WEEKEND PROJECT)</small>
+	<small>(WEB SYNTHESIZER) In development</small>
 	<small><a href="javascrip:void(0)" data-ng-click="overlay.toggle()">-- info --</a></small>
 </div>
 <div class="overlay" data-ng-class="{toggled: overlay.toggled}" data-ng-click="overlay.toggle()">
