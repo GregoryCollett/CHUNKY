@@ -54,8 +54,6 @@ angular.module('chunky')
       start: {
         value: function(cfg) {
           this.frequency = cfg.frequency;
-
-          var now = this.ctx.currentTime;
           
           this._fm.frequency = this.frequency * 2;
           var fm = new FrequencyModulator(this.ctx, this._fm);
@@ -63,8 +61,8 @@ angular.module('chunky')
 
           osc.fm = fm;
           osc.type = this.shape;
-          osc.frequency.value = this.frequency;
-          osc.detune.value = this.fine;
+          osc.frequency.setValueAtTime(this.frequency, cfg.now);
+          osc.detune.setValueAtTime(this.fine, cfg.now);
 
           fm.connect(osc.frequency);
           osc.connect(this.controlNode);
@@ -72,8 +70,16 @@ angular.module('chunky')
 
           this.voices[cfg.note] = osc;
 
-          this.output.gain.setValueAtTime(1, now);
-          return this;
+          if (cfg.glide && this._lastFrequency) {
+            osc.frequency.setValueAtTime(this._lastFrequency, cfg.now);
+            osc.fm.modulator.frequency.setValueAtTime(this._lastFrequency * 2, cfg.now);
+            osc.frequency.linearRampToValueAtTime(this.frequency, cfg.now + cfg.glide);
+            osc.fm.modulator.frequency.linearRampToValueAtTime(this._fm.frequency, cfg.now + cfg.glide);
+          }
+
+          this.output.gain.setValueAtTime(1, cfg.now);
+
+          this._lastFrequency = this.frequency;
         }
       },
       stop: {

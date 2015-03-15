@@ -1,10 +1,11 @@
 <div class="chunky container">
-	<div class="row">
+	<div class="row" style="margin-left:-2px;">
 		<div class="col-md-12">
 			<div class="module patch-bay">
 				<div class="row">
 					<div class="col-md-4">
 						<h1>CHUNKY WS</h1>
+						<p><i>A Gregory Collett creation</i></p>
 					</div>
 					<div class="col-md-4">
 						<div class="controls">
@@ -26,13 +27,13 @@
 						</div>
 					</div>
 					<div class="col-md-4">
-						<p><i>A Gregory Collett creation</i></p>
+						
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" style="margin-left:-2px;">
 		<div class="col-md-4">
 			<!-- OSCILLATORS -->
 			<div class="module">
@@ -488,12 +489,13 @@
 									</tab>
 									<tab heading="LFO 1" class="lfo">
 										<div class="row">
-											<div class="param" data-ng-repeat="param in chunky.lfo.params">
+											<div class="param" data-ng-repeat="param in chunky.lfo1.params">
 												<knob label="{{param.label}}"
-													value="chunky.lfo[param.name]"
+													value="chunky.lfo1[param.name]"
 													step="param.step"
 													min="param.min"
 													max="param.max"
+													speed="1"
 													class="knob-classic"
 													options="{}">
 												</knob>
@@ -554,14 +556,15 @@
 	<h2>WHAT IS CHUNKY</h2>
 	<p>CHUNKY IS A BROWSER BASED SYNTHESIZER UTILIZING SOME COOL WEB TECHNOLOGIES.</p>
 	<h2>HOW TO USE CHUNKY</h2>
-	<p>ENABLE OSCILLATORS. FIDDLE WITH KNOBS (NO PUN INTENDED)/ TRY PRESSING YOUR QWERTY KEYBOARD :D</p>
+	<p>ENABLE OSCILLATORS. FIDDLE WITH KNOBS (NO PUN INTENDED). TRY PRESSING YOUR QWERTY KEYBOARD :D</p>
 	<h2>KNOWN BUGS</h2>
 	<p>ENVELOPE GENERATORS - MULTIPLE</P>
-	<P>KNOBS - SET HANDLE TO CURRENT/DEFAULT VALUE</p>
+	<p>CRAZY CLICKING! ANNOYING CLICK WHATEVER YOU WANT TO CALL IT</p>
+	<p>KNOBS - SET HANDLE TO CURRENT/DEFAULT VALUE</p>
+	<p>ISSUE WITH POLYPHONY ONLY WITH SOME KEYS...</p>
 	<h2>TODOS</h2>
 	<p>FIX BUGS :D</p>
 	<p>ADD MORE WAVE TYPES TO OSCILLATORS</p>
-	<p>ADD POLYPHONY (VOICES) --DONE!--</p>
 	<p>ADD MIDI AND NOTE VELOCITY SUPPORT</p>
 	<p>ADD INSERTS FOR EFFECTS (I HAVE ALREADY CREATED/REPLICATED A NUMBER OF EFFECTS)</p>
 	<p>ADD MULTITOUCH SUPPORT</p>
@@ -570,6 +573,6 @@
 	<p>ADD HOLD TO ENVELOPES</p>
 	<p>ADD ATTACK TO LFO</p>
 	<p>ALLOW ALL MODULATABLE PARAMS TO HAVE A RANGE</p>
-	<a href="javascript:void(0);" data-ng-click="overlay.toggle()" class="btn btn-default btn-chunky">GET TO PLAYING</a>
+	<button data-ng-click="overlay.toggle()" class="btn btn-default btn-chunky">GET TO PLAYING</button>
 </div>
 <div keyboard id="keyboard" keyup="keyboard.keyup" keydown="keyboard.keydown" polyphonic="true"></div>

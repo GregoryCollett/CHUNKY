@@ -41,10 +41,11 @@ angular.module('chunky')
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
       this.env2 = new Envelope(this.ctx);
+      this.lfo1 = new LFO(this.ctx);
+      this.lfo2 = new LFO(this.ctx);
       this.distortion = new Distortion(this.ctx);
       this.reverb = new Reverb(this.ctx);
       this.master = this.ctx.createGain();
-      this.limiter = this.ctx.createDynamicsCompressor();
       this.analyser = this.ctx.createAnalyser();
       
 
@@ -72,22 +73,17 @@ angular.module('chunky')
       this.vcf2.connect(this.distortion.input);
       this.distortion.connect(this.reverb);
       this.reverb.connect(this.master);
-      this.master.connect(this.limiter);
-      this.limiter.connect(this.analyser);
+      this.master.connect(this.analyser);
       this.analyser.connect(this.ctx.destination);
 
       // Link modulators/envelopes
       this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
       this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
       this.vcaEnvelope.connect(this.master, 'gain', {range:[0, 2]});
-      // this.lfo = new LFO(this.ctx, {
-      //   target: this.vcf2._filter.frequency, 
-      //   callback: function(param, value) {
-      //     param.setValueAtTime(value, 0);
-      //   }
-      // });
+      this.lfo1.connect(this.vcf._filter.frequency);
+      this.lfo1.connect(this.vcf2._filter.frequency);
 
-      // this.lfos.push(this.lfo);
+      this.lfos.push(this.lfo1, this.lfo2);
     };
     
     Chunky.prototype = Object.create(null, {
@@ -99,7 +95,8 @@ angular.module('chunky')
 
           this._voices[note] = freq;
 
-          params = {note:note, frequency:freq};
+          params = {note:note, frequency:freq, now: this.ctx.currentTime};
+
           if (this.glide) {
             params.glide = this.glideAmount;
           }

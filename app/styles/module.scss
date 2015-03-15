@@ -62,9 +62,8 @@ input[type="checkbox"].enabled {
 			text-shadow: -2px 0px black;
 		}
 		p {
-			margin-top:12px;
+			margin-bottom: 0;
 			color: #9F9F9F;
-			text-align: center;
 			text-shadow: -1px 0px black;
 		}
 		.controls {
@@ -75,7 +74,7 @@ input[type="checkbox"].enabled {
 				width: 100%;
 				background: transparent;
 				border: none;
-				height: 39px;
+				height: 30px;
 				padding: 0 0 0 10px;
 				outline:none;
 				&:focus {
@@ -86,9 +85,10 @@ input[type="checkbox"].enabled {
 				width:100%;
 				border-radius: 0 5px 5px 0;
 				background: rgba(0,0,0, 0.7);
-				height: 39px;
+				height: 30px;
 				outline:none;
 				color:#737489;
+				padding:2px;
 				&:focus {
 					outline:none;
 				}
@@ -98,9 +98,10 @@ input[type="checkbox"].enabled {
 			}
 		}
 		.voices {
-			border-top: 1px solid;
+			border-top: 1px solid rgb(33, 39, 60);
 			p {
-				margin: 2px;
+				margin: 4px;
+				text-align: center;
 			}
 		}
 	}
