@@ -20,6 +20,9 @@
 									</button>
 								</div>
 							</div>
+							<div class="row voices">
+								<p>Voices: <span data-ng-bind="chunky.voices"></span></p>
+							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
@@ -226,19 +229,35 @@
 							</div>
 							<div class="controls">
 								<knob value="chunky.distortion.preBand" 
-								options="{min:100, max:4000, class:'knob-default', response:true, speed: 1}"
+								min="chunky.distortion.meta.params.preBand.min"
+								max="chunky.distortion.meta.params.preBand.max"
+								step="0.01"
+								speed="1"
 								label="BND"
+									options="{}"
 								class="knob-default"></knob>
-								<knob value="chunky.distortion.color" 
-								options="{min:100, max:4000, class:'knob-default', response:true, speed: 1}"
+								<knob value="chunky.distortion.colour" 
+								min="chunky.distortion.meta.params.colour.min"
+								max="chunky.distortion.meta.params.colour.max"
+								speed="1"
+								step="1"
 								label="COL"
+									options="{}"
 								class="knob-default"></knob>
 								<knob value="chunky.distortion.drive" 
-								options="{min:100, max:4000, class:'knob-default', response:true, speed: 1}"
+								min="chunky.distortion.meta.params.drive.min"
+								max="chunky.distortion.meta.params.drive.max"
+								speed="1"
+								step="0.01"
+									options="{}"
 								label="DRV"
 								class="knob-default"></knob>
-								<knob value="chunky.distortion.postCut" 
-								options="{min:100, max:4000, class:'knob-default', response:true, speed: 1}"
+								<knob value="chunky.distortion.postCut"
+								min="chunky.distortion.meta.params.postCut.min"
+								max="chunky.distortion.meta.params.postCut.max"
+								speed="1"
+								step="1" 
+									options="{}"
 								label="CUT"
 								class="knob-default"></knob>
 							</div>

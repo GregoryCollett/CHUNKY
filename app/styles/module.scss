@@ -97,6 +97,12 @@ input[type="checkbox"].enabled {
 				}
 			}
 		}
+		.voices {
+			border-top: 1px solid;
+			p {
+				margin: 2px;
+			}
+		}
 	}
 	.header {
 	  display:flex;

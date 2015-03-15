@@ -27,7 +27,7 @@ angular.module('chunky')
         amount: 0
       };
 
-      this.voices = {};
+      this._voices = {};
       this.sampleRate = 2048;
 
       // setup nodes
@@ -37,7 +37,6 @@ angular.module('chunky')
       this.noise = new Noise(this.ctx);
       this.vcf = new Filter(this.ctx, {type:'bandpass'});
       this.vcf2 = new Filter(this.ctx, {type:'highpass'});
-      //this.comb = new CombFilter(this.ctx);
       this.vcfEnvelope = new Envelope(this.ctx);
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
@@ -48,7 +47,6 @@ angular.module('chunky')
       this.limiter = this.ctx.createDynamicsCompressor();
       this.analyser = this.ctx.createAnalyser();
       
-      this.bitCrusher = new BitCrusher(this.ctx);
 
       // make life easier
       this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
@@ -69,9 +67,7 @@ angular.module('chunky')
       for (var i = 0; i < this.oscs.length; i++) {
         this.oscs[i].connect(this.vcf.input);
         this.oscs[i].connect(this.vcf2.input);
-        // this.oscs[i].connect(this.comb.input);
       }
-      // this.comb.connect(this.distortion);
       this.vcf.connect(this.distortion.input);
       this.vcf2.connect(this.distortion.input);
       this.distortion.connect(this.reverb);
@@ -83,7 +79,6 @@ angular.module('chunky')
       // Link modulators/envelopes
       this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
       this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
-      //this.vcfEnvelope.connect(this.comb, ['_filter','frequency']);
       this.vcaEnvelope.connect(this.master, 'gain', {range:[0, 2]});
       // this.lfo = new LFO(this.ctx, {
       //   target: this.vcf2._filter.frequency, 
@@ -99,18 +94,31 @@ angular.module('chunky')
       playNote: {
         value: function(note, freq) {
           var i,
+              params,
               now = this.ctx.currentTime;
 
-          this.voices[note] = freq;
-          
+          this._voices[note] = freq;
+
+          params = {note:note, frequency:freq};
+          if (this.glide) {
+            params.glide = this.glideAmount;
+          }
+
           for (i = 0; i < this.envelopes.length; i++) {
-            if (!this.envelopes[i].reTrigger && Object.keys(this.voices).length === 1 || this.envelopes[i].reTrigger) {
+            if (!this.polyphony || !this.envelopes[i].reTrigger && Object.keys(this._voices).length === 1 || this.envelopes[i].reTrigger) {
               this.envelopes[i].triggerOn(now);
             }
           }
 
           for(i = 0; i < this.oscs.length; i++) {
-            this.oscs[i].start(note, freq);
+            if (!this.polyphony) {
+              for (var voice in this._voices) {
+                if (voice !== note) {
+                  this.stop(voice);
+                }
+              }
+            }
+            this.oscs[i].start(params);
           }
         }
       },
@@ -119,18 +127,22 @@ angular.module('chunky')
           var i,
               now = this.ctx.currentTime;
 
-          delete this.voices[note];
+          if (this._voices[note]) {
+            delete this._voices[note];
 
-          for (i = 0; i < this.envelopes.length; i++) {
-            this.envelopes[i].triggerOff(now);
-          }
+            for (i = 0; i < this.envelopes.length; i++) {
+              if (Object.keys(this._voices).length <= 1) {
+                //this.envelopes[i].triggerOff(now);
+              }
+            }
 
-          for(i = 0; i < this.oscs.length; i++) {
-            if (this.oscs[i] instanceof Oscillator) {
-              this.oscs[i].stop(note, freq);
-            } else {
-              if (Object.keys(this.voices).length < 1) {
+            for(i = 0; i < this.oscs.length; i++) {
+              if (this.oscs[i] instanceof Oscillator) {
                 this.oscs[i].stop(note, freq);
+              } else {
+                if (Object.keys(this._voices).length < 1) {
+                  this.oscs[i].stop(note, freq);
+                }
               }
             }
           }
@@ -261,6 +273,14 @@ angular.module('chunky')
         },
         set: function(polyphony) {
           this._polyphony = polyphony;
+        }
+      },
+      voices: {
+        get: function() {
+          return Object.keys(this._voices).length;
+        },
+        set: function() {
+          return;
         }
       }
     });

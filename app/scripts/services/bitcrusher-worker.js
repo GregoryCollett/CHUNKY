@@ -4,6 +4,7 @@ var phaser = 0;
 var lastDataValue = 0;
 
 onaudioprocess= function (e) {
+	console.log(e);
   for (var channel=0; channel<e.inputBuffers.length; channel++) {
     var inputBuffer = e.inputBuffers[channel];
     var outputBuffer = e.outputBuffers[channel];

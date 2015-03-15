@@ -52,8 +52,8 @@ angular.module('chunky')
       },
       // this method should also take a velocity going forward
       start: {
-        value: function(note, freq) {
-          this.frequency = freq;
+        value: function(cfg) {
+          this.frequency = cfg.frequency;
 
           var now = this.ctx.currentTime;
           
@@ -70,7 +70,7 @@ angular.module('chunky')
           osc.connect(this.controlNode);
           osc.start(0);
 
-          this.voices[note] = osc;
+          this.voices[cfg.note] = osc;
 
           this.output.gain.setValueAtTime(1, now);
           return this;
@@ -160,7 +160,9 @@ angular.module('chunky')
         set: function(type) {
           this._fm.type = type;
           for(var voice in this.voices) {
-            this.voices[voice].fm.type = this._fm.type;
+            if (this.voices[voice].fm) {
+              this.voices[voice].fm.type = this._fm.type;
+            }
           }
         }
       },
