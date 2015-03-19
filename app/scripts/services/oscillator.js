@@ -13,7 +13,7 @@ angular.module('chunky')
       this.type = 'oscillator';
 
       this.voices = {};
-      this._fm = cfg.fm || {type:'sine', gain: 300, frequency: 400};
+      this._fm = cfg.fm || {enabled: false, type:'sine', gain: 300, frequency: 400};
 
       this.controlNode = ctx.createGain();
       this.node = this.ctx.createGain();
@@ -64,7 +64,9 @@ angular.module('chunky')
           osc.frequency.setValueAtTime(this.frequency, cfg.now);
           osc.detune.setValueAtTime(this.fine, cfg.now);
 
-          fm.connect(osc.frequency);
+          if (this._fm.enabled) {
+            fm.connect(osc.frequency);
+          }
           osc.connect(this.controlNode);
           osc.start(0);
 
@@ -203,7 +205,8 @@ angular.module('chunky')
             shape: this.shape,
             octave: this.octave,
             fine: this.fine,
-            gain: this.gain
+            gain: this.gain,
+            fm: this._fm,
           };
         },
         set: function(cfg) {

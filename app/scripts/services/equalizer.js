@@ -11,17 +11,16 @@ angular.module('chunky')
 
 			this.lowShelf = this.ctx.createBiquadFilter();
 			this.lowShelf.type = 'lowshelf';
+			this.lowShelf.boost = this.ctx.createGainNode();
+			this.lowShelf.boost.gain.value = 1;
 			this.midShelf = this.ctx.createBiquadFilter();
 			this.midShelf.type = 'peaking';
 			this.highShelf = this.ctx.createBiquadFilter();
 			this.highShelf.type = 'highshelf';
 
-			this.registerBand(this.lowShelf);
-			this.registerBand(this.midShelf);
-			this.registerBand(this.highShelf);
-
 			this.input.connect(this.lowShelf);
-			this.lowShelf.connect(this.midShelf);
+			this.lowShelf.connect(this.lowShelf.boost);
+			this.lowShelf.boost.connect(this.midShelf);
 			this.midShelf.connect(this.highShelf);
 			this.highShelf.connect(this.output);
 		};
@@ -37,11 +36,24 @@ angular.module('chunky')
 					this.output.disconnect();
 				}
 			},
-			registerBand: {
-				value: function(band) {
-					this.bands.push(band);
+			lowBoost: {
+				get: function() {
+					return this.lowShelf.boost.gain.value;
+				},
+				set: function(bst) {
+					this.lowShelf.boost.gain.setValueAtTime(bst, 0);
 				}
 			},
+			low: {
+				get: function() {
+					return this.lowShelf.gain.value;
+				},
+				set: function(low) {
+					this.lowShelf.gain.setValueAtTime(low, 0);
+				}
+			},
+			mid: {},
+			high: {},
 		});
 
 		return Equalizer;

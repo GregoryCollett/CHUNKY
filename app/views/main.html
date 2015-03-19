@@ -22,7 +22,16 @@
 								</div>
 							</div>
 							<div class="row voices">
-								<p>Voices: <span data-ng-bind="chunky.voices"></span></p>
+								<div class="col-md-6">
+									<p>VOICES: <span data-ng-bind="chunky.voices"></span></p>
+								</div>
+								<div class="col-md-6 tempo-control">
+									<label>TEMPO: </label>
+									<input type="number" 
+										data-ng-model="chunky.tempo" 
+										min="30" 
+										max="220"/>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -50,6 +59,10 @@
 							<option value="sawtooth">SAW</option>
 							<option value="triangle">TRI</option>
 						</select>
+						<label>
+							<input data-ng-model="osc._fm.enabled" class="enabled" type="checkbox"/>
+							FM
+						</label>
 						<select data-ng-model="osc.fmType" class="oscillator-type">
 							<option value="sine">SIN</option>
 							<option value="square">SQR</option>
@@ -320,6 +333,43 @@
 								<p>EQ</p>
 							</div>
 							<div class="controls">
+								<knob value=""
+									label="BST"
+									class="knob-default knob-small"
+									min="0"
+									max="100"
+									speed="0.1"
+									step="0.01"
+									options="{}"
+									style="margin-right: 0;padding-right: 0;">
+								</knob>
+								<knob value=""
+									label="LOW"
+									class="knob-default"
+									min="0"
+									max="100"
+									speed="0.1"
+									step="0.01"
+									options="{}">
+								</knob>
+								<knob value=""
+									label="MID"
+									class="knob-default"
+									min="0"
+									max="100"
+									speed="0.1"
+									step="0.01"
+									options="{}">
+								</knob>
+								<knob value=""
+									label="HIGH"
+									class="knob-default"
+									min="0"
+									max="100"
+									speed="0.1"
+									step="0.01"
+									options="{}">
+								</knob>
 							</div>
 						</div>
 					</div>
@@ -483,19 +533,40 @@
 												<p class="label">
 													INVERT
 												</p>
-													<input data-ng-model="chunky.env2.inverted" class="enabled retrig" type="checkbox"/>
+												<input data-ng-model="chunky.env2.inverted" class="enabled retrig" type="checkbox"/>
 											</div>
 										</div>
 									</tab>
 									<tab heading="LFO 1" class="lfo">
 										<div class="row">
-											<div class="param" data-ng-repeat="param in chunky.lfo1.params">
-												<knob label="{{param.label}}"
-													value="chunky.lfo1[param.name]"
-													step="param.step"
-													min="param.min"
-													max="param.max"
-													speed="1"
+											<div class="param">
+												<p class="label">SYNC</p>
+												<input data-ng-model="chunky.lfo1.sync" 
+													class="enabled retrig" 
+													type="checkbox"/>
+											</div>
+											<div class="param" data-ng-if="!chunky.lfo1.sync">
+												<knob label="{{chunky.lfo1.params.frequency.label}}"
+													value="chunky.lfo1.frequency"
+													step="chunky.lfo1.params.frequency.step"
+													min="chunky.lfo1.params.frequency.min"
+													max="chunky.lfo1.params.frequency.max"
+													speed="0.5"
+													class="knob-classic"
+													options="{}">
+												</knob>
+											</div>
+											<div class="param" data-ng-if="chunky.lfo1.sync">
+												<p class="label">RATE</p>
+												<select></select>
+											</div>
+											<div class="param">
+												<knob label="{{chunky.lfo1.params.gain.label}}"
+													value="chunky.lfo1.gain"
+													step="chunky.lfo1.params.gain.step"
+													min="chunky.lfo1.params.gain.min"
+													max="chunky.lfo1.params.gain.max"
+													speed="031"
 													class="knob-classic"
 													options="{}">
 												</knob>
@@ -528,6 +599,7 @@
 													step="0.01"
 													min="0"
 													max="1"
+													speed="0.3"
 													class="knob-classic"
 													options="{}">
 												</knob>
@@ -575,4 +647,7 @@
 	<p>ALLOW ALL MODULATABLE PARAMS TO HAVE A RANGE</p>
 	<button data-ng-click="overlay.toggle()" class="btn btn-default btn-chunky">GET TO PLAYING</button>
 </div>
-<div keyboard id="keyboard" keyup="keyboard.keyup" keydown="keyboard.keydown" polyphonic="true"></div>
+<div class="keyboard" data-ng-class="{toggled: keyboard.visible}">
+	<button class="btn btn-keyboard" data-ng-click="keyboard.toggle()">Keyboard</button>
+	<div keyboard id="keyboard" keyup="keyboard.keyup" keydown="keyboard.keydown" polyphonic="true"></div>
+</div>

@@ -57,14 +57,12 @@ angular.module('chunky')
 
       // basic config
       this.vcfMix = 0.5;
-
       this.analyser.fftSize = 1024;
-
       this.master.gain.value = 1;
-
+      this.tempo = 175;
       this.currentPatch = this.patches.list[0];
-      
       // Synth Routing (make this dynamic in the future) :D
+      // in future version we will setup routing based on config :D
       for (var i = 0; i < this.oscs.length; i++) {
         this.oscs[i].connect(this.vcf.input);
         this.oscs[i].connect(this.vcf2.input);
@@ -222,6 +220,14 @@ angular.module('chunky')
           console.log(patch);
 
           return patch;
+        }
+      },
+      tempo: {
+        get: function() {
+          return this.ctx.tempo;
+        },
+        set: function(tempo) {
+          this.ctx.tempo = tempo;
         }
       },
       vcfMix: {

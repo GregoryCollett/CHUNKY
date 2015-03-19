@@ -16,6 +16,10 @@ angular.module('chunky', ['ngRoute','ui.bootstrap', 'indexedDB'])
 
     // Setup Keyboard Callbacks
     $scope.keyboard = {
+      visible: false,
+      toggle: function() {
+        $scope.keyboard.visible = !$scope.keyboard.visible;
+      },
       keydown: function(note, frequency) {
         $scope.chunky.playNote(note, frequency);
       },

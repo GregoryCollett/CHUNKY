@@ -104,6 +104,24 @@ input[type="checkbox"].enabled {
 				text-align: center;
 			}
 		}
+		.tempo-control {
+			label {
+				float:left;
+				height: 25px;
+				line-height: 25px;
+				margin: 0;
+				padding-left: 5px;
+				width: 40%;
+			}
+			input {
+				background: transparent;
+				border: 0;
+				outline: 0;
+				height: 25px;
+				float: left;
+				width: 60%;
+			}
+		}
 	}
 	.header {
 	  display:flex;
