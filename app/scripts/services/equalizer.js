@@ -52,8 +52,22 @@ angular.module('chunky')
 					this.lowShelf.gain.setValueAtTime(low, 0);
 				}
 			},
-			mid: {},
-			high: {},
+			mid: {
+				get: function() {
+					return this.midShelf.gain.value;
+				},
+				set: function(mid) {
+					this.midShelf.gain.setValueAtTime(mid, 0);
+				}
+			},
+			high: {
+				get: function() {
+					return this.highShelf.gain.value;
+				},
+				set: function(high) {
+					this.highShelf.gain.setValueAtTime(high, 0);
+				}
+			},
 		});
 
 		return Equalizer;
