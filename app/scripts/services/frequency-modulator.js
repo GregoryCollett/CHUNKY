@@ -16,18 +16,20 @@ angular.module('chunky')
 			this.type = cfg.type || this.params.type.defaultValue;
 			this.gain = cfg.gain || this.params.gain.defaultValue;
 			this.frequency = cfg.frequency || this.params.frequency.defaultValue;
+			
 			// Node routing
 			this.modulator.connect(this.amplifier);
+			this.modulator.start(0);
 			//this.amplifier.connect(this.output);
 		};
 
 		FrequencyModulator.prototype = Object.create(null, {
 			// I keep repeating this... I should extend from a base class.. roll on ecmaScript6!
-			// Or I could inject super into here instead of null but... I think thats ugly :)
+			// Or I could inject super into here instead of null
 			connect: {
 				value: function(target) {
 					this.amplifier.connect(target.input ? target.input : target);
-					this.modulator.start(0);
+					
 				}
 			},
 			disconnect: {
