@@ -12,7 +12,8 @@ angular.module('chunky')
     Noise, 
     CombFilter, 
     Patches, 
-    BitCrusher) {
+    BitCrusher,
+    Equalizer) {
     var Chunky = function Chunky(ctx) {
       var self = this;
 
@@ -46,6 +47,7 @@ angular.module('chunky')
       this.distortion = new Distortion(this.ctx);
       this.reverb = new Reverb(this.ctx);
       this.master = this.ctx.createGain();
+      this.equalizer = new Equalizer(this.ctx);
       this.analyser = this.ctx.createAnalyser();
       
 
@@ -71,7 +73,8 @@ angular.module('chunky')
       this.vcf2.connect(this.distortion.input);
       this.distortion.connect(this.reverb);
       this.reverb.connect(this.master);
-      this.master.connect(this.analyser);
+      this.master.connect(this.equalizer.input);
+      this.equalizer.connect(this.analyser);
       this.analyser.connect(this.ctx.destination);
 
       // Link modulators/envelopes

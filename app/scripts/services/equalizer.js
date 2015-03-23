@@ -11,7 +11,7 @@ angular.module('chunky')
 
 			this.lowShelf = this.ctx.createBiquadFilter();
 			this.lowShelf.type = 'lowshelf';
-			this.lowShelf.boost = this.ctx.createGainNode();
+			this.lowShelf.boost = this.ctx.createGain();
 			this.lowShelf.boost.gain.value = 1;
 			this.midShelf = this.ctx.createBiquadFilter();
 			this.midShelf.type = 'peaking';
