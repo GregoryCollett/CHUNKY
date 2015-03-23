@@ -1,9 +1,78 @@
-<!doctype html> <html class="no-js" ng-app="chunky"> <head> <meta charset="utf-8"> <title>CHUNKY WEB SYNTHESIZER</title> <meta name="description" content="CHUNKY WEB SYNTHESIZER UTILIZES WEB AUDIO API AND USES ANGULAR FOR NICE TWO WAY BINDING ON PARAMS"> <meta name="viewport" content="initial-scale=1,minimum-scale=1,maximum-scale=1,width=device-width,user-scalable=no"> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel="stylesheet" href="styles/main.21388b5a.css">  <body data-ng-controller="chunkyController" kill-right-click> <oscilloscope analyser="chunky.analyser" class="background"></oscilloscope> <!--[if lt IE 7]>
+<!doctype html>
+<html class="no-js" ng-app="chunky">
+  <head>
+    <meta charset="utf-8">
+    <title>CHUNKY WEB SYNTHESIZER</title>
+    <meta name="description" content="CHUNKY WEB SYNTHESIZER UTILIZES WEB AUDIO API AND USES ANGULAR FOR NICE TWO WAY BINDING ON PARAMS">
+    <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,user-scalable=no">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+  <body data-ng-controller="chunkyController" kill-right-click>
+    <oscilloscope analyser="chunky.analyser" class="background"></oscilloscope>
+    <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]--> <div ng-view=""></div> <!-- Google Analytics: change UA-XXXXX-X to be your site's ID --> <script>!function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
-       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
-       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
-       }(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <![endif]-->
+    <div ng-view=""></div>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');</script> <script src="scripts/vendor.20406413.js"></script> <script src="http://stuartmemo.com/qwerty-hancock/qwerty-hancock.js"></script> <script src="scripts/scripts.c973589d.js"></script>  
+      ga('create', 'UA-60965824-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-indexed-db/angular-indexed-db.js"></script>
+    <script src="bower_components/audio-worker-node/build/audio-worker-node.js"></script>
+    <script src="bower_components/qwerty-hancock/dist/qwerty-hancock.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/directives/knob.js"></script>
+    <script src="scripts/directives/keyboard.js"></script>
+    <script src="scripts/directives/oscilloscope.js"></script>
+    <script src="scripts/directives/fullscreen.js"></script>
+    <script src="scripts/directives/envelope.js"></script>
+    <script src="scripts/directives/kill-right-click.js"></script>
+    <script src="scripts/services/chunky.js"></script>
+    <script src="scripts/services/patches.js"></script>
+    <script src="scripts/services/audio-ctx.js"></script>
+    <script src="scripts/services/equalizer.js"></script>
+    <script src="scripts/services/bitcrusher.js"></script>
+    <script src="scripts/services/frequency-modulator.js"></script>
+    <script src="scripts/services/oscillator.js"></script>
+    <script src="scripts/services/noise.js"></script>
+    <script src="scripts/services/comb-filter.js"></script>
+    <script src="scripts/services/filter.js"></script>
+    <script src="scripts/services/envelope-param.js"></script>
+    <script src="scripts/services/envelope.js"></script>
+    <script src="scripts/services/lfo.js"></script>
+    <script src="scripts/services/reverb.js"></script>
+    <script src="scripts/services/distortion.js"></script>
+    <!-- endbuild -->
+</body>
+</html>
