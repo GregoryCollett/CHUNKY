@@ -7,7 +7,8 @@ angular.module('chunky')
       scope: {
         keyup: '&',
         keydown: '&',
-        polyphonic: '='
+        polyphonic: '=',
+        startNote: '='
       },
       link: function(scope, elem, attr) {
         var keyboard = new QwertyHancock({
@@ -15,7 +16,7 @@ angular.module('chunky')
           width: $window.window.innerWidth,
           height: 150,
           octaves: 2,
-          startNote: 'C0'
+          startNote: scope.startNote || 'C1'
         });
         
         var isEmpty = function(obj) {

@@ -193,7 +193,7 @@ angular.module('chunky')
             oscillators: [],
             noise: {},
             filters: [],
-            vcfMix: this.vcfmix,
+            vcfMix: this.vcfMix,
             envelopes: [],
             lfos: [],
             distortion: this.distortion.cfg,

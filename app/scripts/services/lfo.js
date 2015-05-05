@@ -251,6 +251,18 @@ angular.module('chunky')
         set: function(gain) {
           this.output.gain.setValueAtTime(gain, 0);
         }
+      },
+      cfg: {
+        get: function() {
+          return {
+            frequency: this.frequency,
+            amount: this.gain
+          };
+        },
+        set: function(cfg) {
+          this.frequency = cfg.frequency;
+          this.gain = cfg.amount;
+        }
       }
     });
     
