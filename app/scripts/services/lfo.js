@@ -228,7 +228,7 @@ angular.module('chunky')
               secondsPerBeat = 60 / beatsPerMinute,
               secondsPerMeasure = secondsPerBeat * beatsPerMeasure,
               secondsPerNote = secondsPerBeat * (baseMeasure / rate),
-              frequency = 1 / secondsPerNote;;
+              frequency = 1 / secondsPerNote;
 
           console.log(frequency);
           return frequency;

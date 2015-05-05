@@ -16,18 +16,15 @@ angular.module('chunky')
     Equalizer) {
     var Chunky = function Chunky(ctx) {
       var self = this;
-
+      // Store the audio context
       this.ctx = ctx;
 
+      // Load default patches
       this.patches = Patches;
 
+      // Set some defaults up
       this.polyphony = true;
-
-      this._glide = {
-        enabled: true,
-        amount: 0
-      };
-
+      this._glide = {enabled: true, amount: 0};
       this._voices = {};
       this.sampleRate = 2048;
 
@@ -78,9 +75,13 @@ angular.module('chunky')
       this.analyser.connect(this.ctx.destination);
 
       // Link modulators/envelopes
+      // connect filter one to vcf envelope
       this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
+      // connect filter two to vcf envelope
       this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
+      // connect amplifier to vca envelope
       this.vcaEnvelope.connect(this.master, 'gain', {range:[0, 2]});
+      // connect lfo to filter 1 & 2...
       this.lfo1.connect(this.vcf._filter.frequency);
       this.lfo1.connect(this.vcf2._filter.frequency);
 

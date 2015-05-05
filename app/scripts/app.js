@@ -9,30 +9,4 @@ angular.module('chunky', ['ngRoute','ui.bootstrap', 'indexedDB'])
     .otherwise({
       redirectTo: '/'
     });
-  })
-  .controller('chunkyController', function($scope, chunkySynth) {
-    // Set synth to scope so we can bind params and make noises :D
-    $scope.chunky = chunkySynth;
-
-    // Setup Keyboard Callbacks
-    $scope.keyboard = {
-      visible: false,
-      toggle: function() {
-        $scope.keyboard.visible = !$scope.keyboard.visible;
-      },
-      keydown: function(note, frequency) {
-        $scope.chunky.playNote(note, frequency);
-      },
-      keyup: function(note, frequency) {
-        $scope.chunky.stop(note, frequency);
-      }
-    };
-
-    // Setup the overlay for info :)
-    $scope.overlay = {
-      toggled: false,
-      toggle: function() {
-        $scope.overlay.toggled = !$scope.overlay.toggled;
-      }
-    };
-  }); 
+  });

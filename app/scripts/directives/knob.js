@@ -48,9 +48,6 @@ angular.module('chunky')
 			hand = movingFace.find('.knob-hand'),
 			canvas = container.find('.knob-progress');
 
-			console.log(scope.label, scope.value, scope.min, scope.max);
-			//container.addClass(params.class);
-
 			movingFace
 				.css('position', 'relative')
 				.css('overflow', 'hidden')
