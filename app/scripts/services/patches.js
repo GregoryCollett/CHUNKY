@@ -1,99 +1,17 @@
 'use strict';
 
 angular.module('chunky')
-	.service('Patches', function() {
+	.service('Patches', function($http, localStorageService) {
 		var Patches = function Patches() {
-			this.list = [
-				{
-					name: 'init',
-					oscillators: [
-						{ enabled: true, shape: 'sine', octave: 4, fine: 0, gain: 0.7 },
-						{ enabled: true, shape: 'sine', octave: 3, fine: 0, gain: 0.9 },
-						{ enabled: true, shape: 'sine', octave: 2, fine: 0, gain: 0.2 },
-					],
-					vcfMix: 0.5,
-					filters: [
-						{ enabled: true, type: 'lowpass', frequency: 500, resonance: 2, gain: 1},
-						{ enabled: false, type: 'bandpass', frequency: 500, resonance: 2, gain: 1},
-					],
-					envelopes: [
-						// vcf
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						// vca
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						//misc
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 }
-					],
-					lfos: [
-						{},
-						{}
-					],
-					distortion: { enabled: false, preBand: 0, colour: 0, drive: 0, postCut: 0 },
-					reverb: { enabled: false, seconds: 1, decay: 0.3 }
-				},
-				{
-					name: 'sub',
-					oscillators: [
-						{ enabled: true, shape: 'sine', octave: 1, fine: 0, gain: 0.7 },
-						{ enabled: false, shape: 'sine', octave: 3, fine: 0, gain: 0.9 },
-						{ enabled: false, shape: 'sine', octave: 2, fine: 0, gain: 0.2 },
-					],
-					vcfMix: 1,
-					filters: [
-						{ enabled: true, type: 'lowpass', frequency: 80, resonance: 2, gain: 1},
-						{ enabled: false, type: 'bandpass', frequency: 500, resonance: 2, gain: 1},
-					],
-					envelopes: [
-						// vcf
-						{ attack: 0.000002, decay: 0.000002, inverted: true, reTrigger: false, release: 0.02, sustain: 1 },
-						// vca
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						//misc
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 }
-					],
-					lfos: [
-						{},
-						{}
-					],
-					distortion: { enabled: false, preBand: 0, colour: 0, drive: 0, postCut: 0 },
-					reverb: { enabled: false, seconds: 1, decay: 0.3 }
-				},
-				{
-					name: 'sub backed',
-					oscillators: [
-						{ enabled: true, shape: 'sine', octave: 1, fine: 0, gain: 0.7 },
-						{ enabled: true, shape: 'sine', octave: 3, fine: 0, gain: 0.9 },
-						{ enabled: true, shape: 'sine', octave: 2, fine: 0, gain: 0.2 },
-					],
-					vcfMix: 1,
-					filters: [
-						{ enabled: true, type: 'lowpass', frequency: 80, resonance: 2, gain: 1},
-						{ enabled: false, type: 'bandpass', frequency: 500, resonance: 2, gain: 1},
-					],
-					envelopes: [
-						// vcf
-						{ attack: 0.000002, decay: 0.000002, inverted: true, reTrigger: false, release: 0.02, sustain: 1 },
-						// vca
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						//misc
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 },
-						{ attack: 0.02, decay: 0.1, inverted: false, reTrigger: false, release: 0.02, sustain: 1 }
-					],
-					lfos: [
-						{},
-						{}
-					],
-					distortion: { enabled: false, preBand: 0, colour: 0, drive: 0, postCut: 0 },
-					reverb: { enabled: false, seconds: 1, decay: 0.3 }
-				},
-			];
+			// setup the default collection property
+			this.list = [];
 
+			// run syncronise as soon as this object is called.
 			this.sync();
 		};
 
 		Patches.prototype = Object.create(null, {
+			// register a new patch on to the current list.
 			register: {
 				value: function(patch) {
 					this.list.push(patch);
@@ -102,14 +20,28 @@ angular.module('chunky')
 			// Sync patches stored in web storage :)
 			sync: {
 				value: function() {
-					//for each patch in local storage...
+					// 1: load the default patches
+					this.load('/data/patches.json');
+
+					// 2: load the patches already in local storage.
+					var patches = localStorageService.keys();
+					var i;
+
+					for (i = 0; i < patches.length; i++) {
+						// get the patch object from local storage
+						var patch = localStorageService.get(patches[i])
+						// register the patch onto the system
+						this.register(patch);
+					}
 				}
 			},
+			// the lookup processor - Processes the lookup list from a list of patches
 			_lookup: {
 				value: function() {
 					var lookup = [],
 						i;
 
+					// for each patch push to the final lookup
 					for (i = 0; i < this.list.length; i++) {
 						lookup.push({id: i, name: this.list[i].name });
 					}
@@ -117,12 +49,44 @@ angular.module('chunky')
 					return lookup;
 				}
 			},
+			// the lookup being bound to the view
 			lookup: {
 				get: function() {
 					return this._lookup();
 				}
+			},
+			// load patches from a given url (could be user created so on so on...)
+			load: {
+				value: function(url) {
+					// the promise returned from the get request
+					var p = $http.get(url);
+					// we cant use bind so unfortunately we set this to scope var
+					var self = this;
+
+					// success patches imported
+					function success(r) {
+						// ensure that the result is an array
+						if (angular.isArray(r)) {
+							var i;
+							// for each patch in the returned patches list
+							for (i = 0; i < r.length; i++) {
+								// for each patch loaded from the given url push the patch to local storage.
+								localStorageService.set(r[i].name, r[i]);
+							}
+						}
+					}
+
+					// error importing the patches
+					function error() {
+						console.log('unable to load the requested patches');
+					}
+
+					// complete the promise
+					p.success(success).error(error);
+				}
 			}
 		});
-
+	
+		// initialise the object as a singleton service
 		return new Patches();
 	});

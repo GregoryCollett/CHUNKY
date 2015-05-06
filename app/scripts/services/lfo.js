@@ -260,8 +260,8 @@ angular.module('chunky')
           };
         },
         set: function(cfg) {
-          this.frequency = cfg.frequency;
-          this.gain = cfg.amount;
+          this.frequency = cfg.frequency || this.params.frequency.defaultValue;
+          this.gain = cfg.amount || this.params.gain.defaultValue;
         }
       }
     });

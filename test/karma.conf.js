@@ -33,6 +33,7 @@ module.exports = function(config) {
       'bower_components/angular-indexed-db/angular-indexed-db.js',
       'bower_components/audio-worker-node/build/audio-worker-node.js',
       'bower_components/qwerty-hancock/dist/qwerty-hancock.js',
+      'bower_components/angular-local-storage/dist/angular-local-storage.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',

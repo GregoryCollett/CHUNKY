@@ -28,23 +28,34 @@ angular.module('chunky')
       this._voices = {};
       this.sampleRate = 2048;
 
-      // setup nodes
+      // setup all possible audio nodes
+      // setup oscillators
       this.osc1 = new Oscillator(this.ctx, {shape: 'sawtooth', octave: 4, detune:-10});
       this.osc2 = new Oscillator(this.ctx, {shape: 'sawtooth', octave: 3, detune: 10});
       this.osc3 = new Oscillator(this.ctx, {shape: 'square', octave: 1});
+      // setup noise oscillator
       this.noise = new Noise(this.ctx);
+      // setup filters
       this.vcf = new Filter(this.ctx, {type:'bandpass'});
       this.vcf2 = new Filter(this.ctx, {type:'highpass'});
+      // setup envelopes
       this.vcfEnvelope = new Envelope(this.ctx);
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
       this.env2 = new Envelope(this.ctx);
+      // setup low frequency oscillators
       this.lfo1 = new LFO(this.ctx);
       this.lfo2 = new LFO(this.ctx);
+      // setup effects
+      // setup distortion
       this.distortion = new Distortion(this.ctx);
+      // setup reverb
       this.reverb = new Reverb(this.ctx);
+      // setup master gain
       this.master = this.ctx.createGain();
+      // setup final equalizer
       this.equalizer = new Equalizer(this.ctx);
+      // create an analyser to be used by oscilloscope
       this.analyser = this.ctx.createAnalyser();
       
 
@@ -52,16 +63,16 @@ angular.module('chunky')
       this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
       this.filters = [this.vcf, this.vcf2];
       this.envelopes = [this.vcfEnvelope, this.vcaEnvelope, this.env1, this.env2];
-      this.lfos = [];
+      this.lfos = [this.lfo1, this.lfo2];
 
       // basic config
       this.vcfMix = 0.5;
       this.analyser.fftSize = 1024;
       this.master.gain.value = 1;
       this.tempo = 175;
-      this.currentPatch = this.patches.list[0];
+
       // Synth Routing (make this dynamic in the future) :D
-      // in future version we will setup routing based on config :D
+      // in future version we will setup routing based on users config :D
       for (var i = 0; i < this.oscs.length; i++) {
         this.oscs[i].connect(this.vcf.input);
         this.oscs[i].connect(this.vcf2.input);
@@ -84,8 +95,6 @@ angular.module('chunky')
       // connect lfo to filter 1 & 2...
       this.lfo1.connect(this.vcf._filter.frequency);
       this.lfo1.connect(this.vcf2._filter.frequency);
-
-      this.lfos.push(this.lfo1, this.lfo2);
     };
     
     Chunky.prototype = Object.create(null, {
@@ -189,6 +198,7 @@ angular.module('chunky')
       },
       savePatch: {
         value: function() {
+          // setup the default patch object (we could make this a proper object but wah da hek)
           var patch = {
             oscillators: [],
             noise: {},
@@ -197,10 +207,17 @@ angular.module('chunky')
             envelopes: [],
             lfos: [],
             distortion: this.distortion.cfg,
-            reverb: this.reverb.cfg
+            reverb: this.reverb.cfg,
+            polyphony: this.polyphony,
+            glide: this._glide,
+            master: this.masterGain
           },
           i;
 
+          // ask user for a patch
+          patch.name = prompt('Please enter a name for your new patch');
+
+          // save config for each oscillator and noise
           for (i = 0; i < this.oscs.length; i++) {
             if (this.oscs[i] instanceof Oscillator) {
               patch.oscillators.push(this.oscs[i].cfg);
@@ -209,20 +226,24 @@ angular.module('chunky')
             }
           }
 
+          // save config for each filter
           for (i = 0; i < this.filters.length; i++) {
             patch.filters.push(this.filters[i].cfg);
           }
 
+          // save config for each envelope
           for (i = 0; i < this.envelopes.length; i++) {
             patch.envelopes.push(this.envelopes[i].cfg);
           }
 
+          // save config for each lfo
           for (i = 0; i < this.lfos.length; i++) {
             patch.lfos.push(this.lfos[i].cfg);
           }
 
-          console.log(patch);
+          // save patch to local storage
 
+          // return the patch
           return patch;
         }
       },
@@ -291,10 +312,13 @@ angular.module('chunky')
         }
       }
     });
-
+  
+    // I bet there is an angular function that can do this
     Chunky.isEmpty = function(obj) {
       return Object.keys(obj).length === 0;
     };
 
+    // Create a chunky singleton service as it will only be required and newable once.
+    // Maybe I should put object into factory and instantiate the object in this service..
     return new Chunky(audioCtx);
   });
