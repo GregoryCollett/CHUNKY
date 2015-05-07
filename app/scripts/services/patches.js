@@ -29,7 +29,7 @@ angular.module('chunky')
 
 					for (i = 0; i < patches.length; i++) {
 						// get the patch object from local storage
-						var patch = localStorageService.get(patches[i])
+						var patch = localStorageService.get(patches[i]);
 						// register the patch onto the system
 						this.register(patch);
 					}

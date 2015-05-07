@@ -2,6 +2,8 @@
 
 angular.module('chunky')
   .service('chunkySynth', function(
+    $window,
+    localStorageService,
     audioCtx, 
     Oscillator, 
     Filter, 
@@ -57,7 +59,6 @@ angular.module('chunky')
       this.equalizer = new Equalizer(this.ctx);
       // create an analyser to be used by oscilloscope
       this.analyser = this.ctx.createAnalyser();
-      
 
       // make life easier
       this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
@@ -98,57 +99,82 @@ angular.module('chunky')
     };
     
     Chunky.prototype = Object.create(null, {
+      // play a note based on frequency, note is stored for use as a key
       playNote: {
         value: function(note, freq) {
           var i,
               params,
               now = this.ctx.currentTime;
 
+          // add pressed note to voices;
           this._voices[note] = freq;
 
+          // create the params object to be passed across to the oscillator
           params = {note:note, frequency:freq, now: this.ctx.currentTime};
 
+          // if chunky has glide enabled
           if (this.glide) {
+            // then add the glide parameter with an amount to the param object
             params.glide = this.glideAmount;
           }
 
+          // for each envelope
           for (i = 0; i < this.envelopes.length; i++) {
             if (!this.polyphony || !this.envelopes[i].reTrigger && Object.keys(this._voices).length === 1 || this.envelopes[i].reTrigger) {
+              // trigger envelope/gate on
               this.envelopes[i].triggerOn(now);
             }
           }
 
+          // for each oscillator
           for(i = 0; i < this.oscs.length; i++) {
+            // if chunky not polyphony
             if (!this.polyphony) {
+              // for each voice tracked by chunky
               for (var voice in this._voices) {
+                // if the note not the same as current note
                 if (voice !== note) {
+                  // stop the note from playing
                   this.stop(voice);
                 }
               }
             }
+            // play note with the given parameters
             this.oscs[i].start(params);
           }
         }
       },
+      // stop note from playing
       stop: {
         value: function(note, freq) {
           var i,
               now = this.ctx.currentTime;
 
+          // if this voices contains the current note
           if (this._voices[note]) {
+            // delete the note from the voices object
             delete this._voices[note];
 
+            // for each envelope
             for (i = 0; i < this.envelopes.length; i++) {
+              // if more than one voice
               if (Object.keys(this._voices).length <= 1) {
+                // trigger release of envelope/gate
                 //this.envelopes[i].triggerOff(now);
               }
             }
 
+            // for each oscillator/noise generator
             for(i = 0; i < this.oscs.length; i++) {
+              // if it is an oscillator
               if (this.oscs[i] instanceof Oscillator) {
+                // stop the oscillator from playing
                 this.oscs[i].stop(note, freq);
               } else {
+                // else its a noise generator
+                // if voices still more than one
                 if (Object.keys(this._voices).length < 1) {
+                  // stop the noise generator
                   this.oscs[i].stop(note, freq);
                 }
               }
@@ -156,6 +182,7 @@ angular.module('chunky')
           }
         }
       },
+      // keeps track of the current patch in use
       currentPatch: {
       	get: function() {
       		return this._currentPatch;
@@ -165,9 +192,11 @@ angular.module('chunky')
       		this.loadPatch(patch);
       	}
       },
+      // loads a patch/maintains patch configuration throughout chunky
       loadPatch: {
         value: function(patch) {
   			  var i ;
+          // reinit each oscillator/noise generator with new cfg
     			for (i = 0; i < this.oscs.length; i++) {
     				if (this.oscs[i] instanceof Oscillator) {
     				  this.oscs[i].cfg = patch.oscillators[i];
@@ -176,23 +205,31 @@ angular.module('chunky')
     				}
     			}
 
+          // reinitialise noise with new cfg
     			this.noise.cfg = patch.noise;
 
+          // reinitialise vcf mix with new val
     			this.vcfMix = patch.vcfMix;
 
+          // reinitialise each filter with new cfg
     			for (i = 0; i < this.filters.length; i++) {
     				this.filters[i].cfg = patch.filters[i];
     			}
 
+          // reinit each envelope with new cfg
     			for (i = 0; i < this.envelopes.length; i++) {
     				this.envelopes[i].cfg = patch.envelopes[i];				
     			}
 
+          // reinit each lfo with new cfg
     			for (i = 0; i < this.lfos.length; i++) {
     				this.lfos[i].cfg = patch.lfos[i];
     			}
 
+          // reinit distortion with new cfg
     			this.distortion.cfg = patch.distortion;
+
+          // reinit reverb with new cfg
     			this.reverb.cfg = patch.reverb;
         }
       },
@@ -215,7 +252,7 @@ angular.module('chunky')
           i;
 
           // ask user for a patch
-          patch.name = prompt('Please enter a name for your new patch');
+          patch.name = $window.prompt('Please enter a name for your new patch');
 
           // save config for each oscillator and noise
           for (i = 0; i < this.oscs.length; i++) {
@@ -242,11 +279,13 @@ angular.module('chunky')
           }
 
           // save patch to local storage
+          localStorageService.set(patch.name, patch);
 
           // return the patch
           return patch;
         }
       },
+      // tempo used for items such as lfo sync
       tempo: {
         get: function() {
           return this.ctx.tempo;
@@ -255,6 +294,7 @@ angular.module('chunky')
           this.ctx.tempo = tempo;
         }
       },
+      // vcf mix used to set the crossfade mix for filters
       vcfMix: {
         enumberable: true,
         get: function() {
@@ -266,6 +306,7 @@ angular.module('chunky')
           this.vcf2.input.gain.value = parseFloat(1 - val);
         }
       },
+      // final output level
       masterGain: {
         enumberable: true,
         get: function() {
@@ -276,6 +317,7 @@ angular.module('chunky')
           this.master.envelope.range = [0, master];
         }
       },
+      // oscillator glide toggle
       glide: {
         enumberable: true,
         get: function() {
@@ -285,6 +327,7 @@ angular.module('chunky')
           this._glide.enabled = glide;
         }
       },
+      // oscillator glide amount - only used when this.glide = true;
       glideAmount: {
         enumberable: true,
         get: function() {
@@ -294,6 +337,7 @@ angular.module('chunky')
           this._glide.amount = amount;
         }
       },
+      // polyphony - can more than one note be played at a time
       polyphony: {
         enumberable: true,
         get: function() {
@@ -303,6 +347,7 @@ angular.module('chunky')
           this._polyphony = polyphony;
         }
       },
+      // number of voices in use
       voices: {
         get: function() {
           return Object.keys(this._voices).length;

@@ -2,6 +2,7 @@
 
 angular.module('chunky', ['ngRoute','ui.bootstrap', 'LocalStorageModule'])
   .config(function ($routeProvider, localStorageServiceProvider) {
+  	// Setup app routing... This is redundant...
     $routeProvider
 	    .when('/', {
 	      templateUrl: 'views/main.html',
@@ -10,6 +11,7 @@ angular.module('chunky', ['ngRoute','ui.bootstrap', 'LocalStorageModule'])
 	      redirectTo: '/'
 	    });
 
+	// Setup local storage configuration
     localStorageServiceProvider
     	.setPrefix('CHUNKY');
   });

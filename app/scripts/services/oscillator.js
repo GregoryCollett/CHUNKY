@@ -98,6 +98,7 @@ angular.module('chunky')
           return this;
         }
       },
+      // this method should change to make changes directly to the generator
       shape: {
         enumerable: true,
         get: function() {
