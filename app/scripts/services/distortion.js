@@ -134,10 +134,10 @@ angular.module('chunky')
         value: function() {
           this.enabled = !this.enabled;
           if (this.enabled) {
-            this.dry.gain.value = 0.4;
+            //this.dry.gain.value = 0.4;
             this.wet.gain.value = 1;
           } else {
-            this.dry.gain.value = 1;
+            //this.dry.gain.value = 1;
             this.wet.gain.value = 0;
           }
         }

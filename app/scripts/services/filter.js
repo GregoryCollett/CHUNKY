@@ -172,7 +172,10 @@ angular.module('chunky')
         },
         set: function(cfg) {
           this.type = cfg.type;
-          this.frequency = cfg.frequency;
+          this._filter.frequency.value = cfg.frequency;
+          if (this._envelope && this._envelope.range) {
+            this._envelope.range = [30, this._frequency];
+          }
           this.resonance = cfg.resonance;
           this.gain = cfg.gain;
         }

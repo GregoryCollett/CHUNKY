@@ -35,29 +35,38 @@ angular.module('chunky')
       this.osc1 = new Oscillator(this.ctx, {shape: 'sawtooth', octave: 4, detune:-10});
       this.osc2 = new Oscillator(this.ctx, {shape: 'sawtooth', octave: 3, detune: 10});
       this.osc3 = new Oscillator(this.ctx, {shape: 'square', octave: 1});
+
       // setup noise oscillator
       this.noise = new Noise(this.ctx);
+      
       // setup filters
       this.vcf = new Filter(this.ctx, {type:'bandpass'});
       this.vcf2 = new Filter(this.ctx, {type:'highpass'});
+      
       // setup envelopes
       this.vcfEnvelope = new Envelope(this.ctx);
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
       this.env2 = new Envelope(this.ctx);
+      
       // setup low frequency oscillators
       this.lfo1 = new LFO(this.ctx);
       this.lfo2 = new LFO(this.ctx);
+      
       // setup effects
       // setup distortion
       this.distortion = new Distortion(this.ctx);
+      
       // setup reverb
       this.reverb = new Reverb(this.ctx);
+      
       // setup master gain
       this.master = this.ctx.createGain();
+      
       // setup final equalizer
       this.equalizer = new Equalizer(this.ctx);
-      // create an analyser to be used by oscilloscope
+      
+      // create an analyser to be used by oscilloscope/s
       this.analyser = this.ctx.createAnalyser();
 
       // make life easier
@@ -89,10 +98,13 @@ angular.module('chunky')
       // Link modulators/envelopes
       // connect filter one to vcf envelope
       this.vcfEnvelope.connect(this.vcf, ['_filter', 'frequency']);
+
       // connect filter two to vcf envelope
       this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
+      
       // connect amplifier to vca envelope
       this.vcaEnvelope.connect(this.master, 'gain', {range:[0, 2]});
+      
       // connect lfo to filter 1 & 2...
       this.lfo1.connect(this.vcf._filter.frequency);
       this.lfo1.connect(this.vcf2._filter.frequency);

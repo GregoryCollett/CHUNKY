@@ -74,10 +74,8 @@ angular.module('chunky')
         value: function() {
           this.enabled = !this.enabled;
           if (this.enabled) {
-            this._dry.gain.value = 0.2;
             this._wet.gain.value = 1;
           } else {
-            this._dry.gain.value = 1;
             this._wet.gain.value = 0;
           }
         }
