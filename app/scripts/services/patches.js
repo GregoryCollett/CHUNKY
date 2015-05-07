@@ -21,7 +21,7 @@ angular.module('chunky')
 			sync: {
 				value: function() {
 					// 1: load the default patches
-					this.load('/data/patches.json');
+					this.load('data/patches.json');
 
 					// 2: load the patches already in local storage.
 					var patches = localStorageService.keys();
