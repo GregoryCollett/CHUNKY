@@ -216,6 +216,7 @@ angular.module('chunky')
           this.octave = cfg.octave;
           this.fine = cfg.fine;
           this.gain = cfg.gain;
+          this._fm = cfg.fm;
         }
       }
     });
