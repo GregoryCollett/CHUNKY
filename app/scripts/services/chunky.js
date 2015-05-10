@@ -208,6 +208,11 @@ angular.module('chunky')
       loadPatch: {
         value: function(patch) {
   			  var i ;
+          // reinit settings held in chunky
+          this.polyphony = patch.polyphony;
+          this._glide = patch.glide;
+          this.masterGain = patch.master;
+
           // reinit each oscillator/noise generator with new cfg
     			for (i = 0; i < this.oscs.length; i++) {
     				if (this.oscs[i] instanceof Oscillator) {
@@ -243,6 +248,9 @@ angular.module('chunky')
 
           // reinit reverb with new cfg
     			this.reverb.cfg = patch.reverb;
+
+          // reinit equalizer with new cfg
+          this.equalizer.cfg = patch.cfg
         }
       },
       savePatch: {
@@ -257,6 +265,7 @@ angular.module('chunky')
             lfos: [],
             distortion: this.distortion.cfg,
             reverb: this.reverb.cfg,
+            equalizer: this.equalizer.cfg,
             polyphony: this.polyphony,
             glide: this._glide,
             master: this.masterGain

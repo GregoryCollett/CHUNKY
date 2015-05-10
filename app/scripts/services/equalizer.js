@@ -36,6 +36,22 @@ angular.module('chunky')
 					this.output.disconnect();
 				}
 			},
+			params: {
+				value: {
+					lowBoost: {
+						defaultValue: 100
+					},
+					low: {
+						defaultValue: 100
+					},
+					mid: {
+						defaultValue: 100
+					},
+					high: {
+						defaultValue: 100
+					}
+				}
+			},
 			lowBoost: {
 				get: function() {
 					return this.lowShelf.boost.gain.value;
@@ -68,6 +84,22 @@ angular.module('chunky')
 					this.highShelf.gain.setValueAtTime(high, 0);
 				}
 			},
+			cfg: {
+				get: function() {
+					return {
+						lowBoost: this.lowBoost,
+						low: this.low,
+						mid: this.mid,
+						high: this.high
+					};
+				},
+				set: function(cfg) {
+					this.lowBoost: cfg.lowBoost || this.params.lowBoost.defaultValue;
+					this.low: cfg.low || this.params.low.defaultValue;
+					this.mid: cfg.mid || this.params.mid.defaultValue;
+					this.high: cfg.high || this.params.high.defaultValue;
+				}
+			}
 		});
 
 		return Equalizer;

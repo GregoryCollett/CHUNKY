@@ -5,49 +5,50 @@ angular.module('chunky')
 	    // Set synth to scope so we can bind params and make noises :D
 	    $scope.chunky = chunkySynth;
 
+	    // Setup midi support if available in browser
 	    $scope.midiDevices = MidiDevices;
 
 	    if (MidiDevices.isSupported()) {
 	    	MidiDevices.connect()
-	    		.then(function(access) {
-	    			var input;
+	    	.then(function(access) {
+	    		var input;
 	    			// To many nested blocks... refactor this.
 	    			if (angular.isFunction(access.inputs)) {
 	    				input = access.inputs();
 	    			} else {
-			    		if (access.inputs && access.inputs.size > 0) {
-			    			input = access.inputs.values();
-			    			console.log('Midi Devices found');
-			    		} else {
-			    			console.log('No Midi Devices connected');
-			    		}
-			    	}
-		    	});
+	    				if (access.inputs && access.inputs.size > 0) {
+	    					input = access.inputs.values();
+	    					console.log('Midi Devices found');
+	    				} else {
+	    					console.log('No Midi Devices connected');
+	    				}
+	    			}
+	    		});
 	    } else {
 	    	console.log('MIDI support not available');
 	    }
 
 	    // Setup Keyboard Callbacks
 	    $scope.keyboard = {
-	      visible: false,
-	      toggle: function() {
-	        $scope.keyboard.visible = !$scope.keyboard.visible;
-	      },
-	      // On key down play note in chunky
-	      keydown: function(note, frequency) {
-	        $scope.chunky.playNote(note, frequency);
-	      },
-	      // On key up release note in chunky
-	      keyup: function(note, frequency) {
-	        $scope.chunky.stop(note, frequency);
-	      }
-	    };
+	    	visible: false,
+	    	toggle: function() {
+	    		$scope.keyboard.visible = !$scope.keyboard.visible;
+	    	},
+	      	// On key down play note in chunky
+	      	keydown: function(note, frequency) {
+	      		$scope.chunky.playNote(note, frequency);
+	      	},
+	      	// On key up release note in chunky
+	      	keyup: function(note, frequency) {
+	      		$scope.chunky.stop(note, frequency);
+	      	}
+	  	};
 
 	    // Setup the overlay for info :)
-	    $scope.overlay = {
-	      toggled: false,
-	      toggle: function() {
-	        $scope.overlay.toggled = !$scope.overlay.toggled;
-	      }
-	    };
-  }); 
+		$scope.overlay = {
+			toggled: false,
+			toggle: function() {
+				$scope.overlay.toggled = !$scope.overlay.toggled;
+			}
+		};
+	});

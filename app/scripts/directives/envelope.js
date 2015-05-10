@@ -50,6 +50,7 @@ angular.module('chunky')
         			ctx.stroke();
             	}
 
+            	// do stuff on resize of window
             	// $window.window.on('resize', function() {
 
             	// });

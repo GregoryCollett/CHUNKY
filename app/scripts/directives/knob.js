@@ -189,6 +189,11 @@ angular.module('chunky')
 				mouseUp();
 			});
 
+			scope.$watch('value', function(o, n) {
+				// set position of hand based on new value
+				// TODO For whoever can be bothered to fix the half hearted attempt... Please feel free!
+			});
+
 			// $document.on('contextmenu', function(e) {
 			// 	e.preventDefault();
 			// });
