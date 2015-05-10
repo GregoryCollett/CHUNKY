@@ -94,10 +94,10 @@ angular.module('chunky')
 					};
 				},
 				set: function(cfg) {
-					this.lowBoost: cfg.lowBoost || this.params.lowBoost.defaultValue;
-					this.low: cfg.low || this.params.low.defaultValue;
-					this.mid: cfg.mid || this.params.mid.defaultValue;
-					this.high: cfg.high || this.params.high.defaultValue;
+					this.lowBoost = cfg.lowBoost || this.params.lowBoost.defaultValue;
+					this.low = cfg.low || this.params.low.defaultValue;
+					this.mid = cfg.mid || this.params.mid.defaultValue;
+					this.high = cfg.high || this.params.high.defaultValue;
 				}
 			}
 		});
