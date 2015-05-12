@@ -10,14 +10,20 @@ angular.module('chunky')
 
 	    if (MidiDevices.isSupported()) {
 	    	MidiDevices.connect()
-	    	.then(function(access) {
-	    		var input;
+	    		.then(function(access) {
 	    			// To many nested blocks... refactor this.
 	    			if (angular.isFunction(access.inputs)) {
-	    				input = access.inputs();
+	    				$scope.midiDevices.list = access.inputs();
 	    			} else {
 	    				if (access.inputs && access.inputs.size > 0) {
-	    					input = access.inputs.values();
+	    					var inputs = access.inputs.values(),
+	    					input = null;
+
+	    					// iterate through the devices
+	                        for (input = inputs.next(); input && !input.done; input = inputs.next()) {
+	                            $scope.midiDevices.list.push(input.value);
+	                        }
+
 	    					console.log('Midi Devices found');
 	    				} else {
 	    					console.log('No Midi Devices connected');

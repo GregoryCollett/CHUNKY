@@ -8,14 +8,14 @@ angular.module('chunky')
 		var Route = function(from, to) {
 			this.from = from;
 			this.to = to;
-		}
+		};
 
 		// for now it seems routes will have to be pushed in order of connection.
 		var nodeRouter = function(input, output) {
 			this.input = input;
 			this.routes = [];
 			this.output = output;
-		}
+		};
 
 		nodeRouter.prototype = Object.create(null, {
 			register: {

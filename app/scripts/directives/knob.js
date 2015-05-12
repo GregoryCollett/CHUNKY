@@ -113,13 +113,13 @@ angular.module('chunky')
 				diff = (mouse.clickpos - newPos) * params.speed,
 				move = (diff * degScale) + degs;
 
-				if(move < max && move > min){
+				if (move < max && move > min) {
 					degs = move;
-				} else{
+				} else {
 					if(move > max){
 						degs = max;
 					}
-					else if(move < min){
+					else if (move < min) {
 						degs = min;
 					}
 				}

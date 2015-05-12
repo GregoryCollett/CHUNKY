@@ -22,10 +22,15 @@
 								</div>
 							</div>
 							<div class="row voices">
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<p>VOICES: <span data-ng-bind="chunky.voices"></span></p>
 								</div>
-								<div class="col-md-6 tempo-control">
+								<div class="col-md-4">
+									<select ng-model="activeDevice" class="form-control" ng-options="device.manufacturer + ' ' + device.name for device in midiDevices.list">
+									    <option value="" disabled>Choose a MIDI device...</option>
+									</select>
+								</div>
+								<div class="col-md-4 tempo-control">
 									<label>TEMPO: </label>
 									<input type="number" 
 										data-ng-model="chunky.tempo" 

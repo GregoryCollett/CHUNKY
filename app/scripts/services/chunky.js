@@ -250,7 +250,7 @@ angular.module('chunky')
     			this.reverb.cfg = patch.reverb;
 
           // reinit equalizer with new cfg
-          this.equalizer.cfg = patch.cfg
+          this.equalizer.cfg = patch.cfg;
         }
       },
       savePatch: {
