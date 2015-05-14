@@ -3,6 +3,11 @@
 // Until I have a device to test with this will not progress
 // Any help is appreciated.
 angular.module('chunky')
+	.service('MidiMapping', function() {
+		return {
+
+		};
+	})
 	.service('MidiDevices', function($window) {
 		return {
 			list: [],

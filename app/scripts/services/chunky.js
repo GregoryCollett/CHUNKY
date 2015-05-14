@@ -111,9 +111,40 @@ angular.module('chunky')
     };
     
     Chunky.prototype = Object.create(null, {
+      controlDevice: {
+        enumberable: true,
+        get: function() {
+          return this._controlDevice;
+        },
+        set: function(device) {
+          console.log(device);
+          if (device) {
+            this._controlDevice = device;
+            // I think the below line should register a callback rather than being set like this.. anyhow
+            this._controlDevice.onmidimessage = this.onMidiMessage;
+          }
+        }
+      },
+      // Handle midi messages
+      onMidiMessage: {
+        value: function(e) {
+          switch (e.data[0]) {
+            // Note on
+            case 144:
+              // play midi note provide a note number and velocity
+              this.playMidiNote(e.data[1], e.data[2]);
+              break;
+            // Turn event note number off
+            case 128: 
+              this.stopMidiNote(e.data[1]);
+              break;
+          }
+          
+        }
+      },
       // play a note based on frequency, note is stored for use as a key
       playNote: {
-        value: function(note, freq) {
+        value: function(note, freq, vel) {
           var i,
               params,
               now = this.ctx.currentTime;
@@ -122,7 +153,7 @@ angular.module('chunky')
           this._voices[note] = freq;
 
           // create the params object to be passed across to the oscillator
-          params = {note:note, frequency:freq, now: this.ctx.currentTime};
+          params = { note:note, frequency:freq, velocity: vel, now: this.ctx.currentTime };
 
           // if chunky has glide enabled
           if (this.glide) {
