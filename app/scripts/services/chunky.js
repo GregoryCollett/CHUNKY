@@ -128,18 +128,65 @@ angular.module('chunky')
       // Handle midi messages
       onMidiMessage: {
         value: function(e) {
+          console.log(e); // on midi input throw some shit out to the console.
           switch (e.data[0]) {
             // Note on
             case 144:
+            case 145:
+            case 146:
+            case 147:
+            case 148:
+            case 149:
+            case 150:
+            case 151:
+            case 152:
+            case 153:
+            case 154:
+            case 155:
+            case 156:
+            case 157:
+            case 158:
+            case 159:
               // play midi note provide a note number and velocity
-              this.playMidiNote(e.data[1], e.data[2]);
+              if (e.data[2] != 0) {
+                console.log('playing midi note');
+              } else {
+                console.log('stopping midi note');
+              }
+              //this.playMidiNote(e.data[1], e.data[2]);
               break;
             // Turn event note number off
             case 128: 
-              this.stopMidiNote(e.data[1]);
+            case 129: 
+            case 130: 
+            case 131: 
+            case 132: 
+            case 133: 
+            case 134: 
+            case 135: 
+            case 136: 
+            case 137: 
+            case 138: 
+            case 139: 
+            case 140: 
+            case 141: 
+            case 142: 
+            case 143: 
+              console.log('stopping midi note');
+              //this.stopMidiNote(e.data[1]);
               break;
           }
           
+        }
+      },
+      playMidiNote: {
+        value: function(note, vel) {
+          this.playNote(note, this.noteToFrequency(note), vel);
+        }
+      },
+      stopMidiNote: {
+        value: function(note) {
+          this.stopNote(note);
         }
       },
       // play a note based on frequency, note is stored for use as a key
@@ -178,7 +225,7 @@ angular.module('chunky')
                 // if the note not the same as current note
                 if (voice !== note) {
                   // stop the note from playing
-                  this.stop(voice);
+                  this.stopNote(voice);
                 }
               }
             }
@@ -188,7 +235,7 @@ angular.module('chunky')
         }
       },
       // stop note from playing
-      stop: {
+      stopNote: {
         value: function(note, freq) {
           var i,
               now = this.ctx.currentTime;

@@ -6,6 +6,7 @@ angular.module('chunky')
 	    $scope.chunky = chunkySynth;
 
 	    // Setup midi support if available in browser
+	    // We can move this into th chunky service and make th controller light weight again
 	    $scope.midiDevices = MidiDevices;
 
 	    if (MidiDevices.isSupported()) {
@@ -46,7 +47,7 @@ angular.module('chunky')
 	      	},
 	      	// On key up release note in chunky
 	      	keyup: function(note, frequency) {
-	      		$scope.chunky.stop(note, frequency);
+	      		$scope.chunky.stopNote(note, frequency);
 	      	}
 	  	};
 
