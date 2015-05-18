@@ -3,6 +3,7 @@
 angular.module('chunky')
   .service('chunkySynth', function(
     $window,
+    $rootScope,
     localStorageService,
     audioCtx, 
     Oscillator, 
@@ -117,7 +118,6 @@ angular.module('chunky')
           return this._controlDevice;
         },
         set: function(device) {
-          console.log(device);
           if (device) {
             this._controlDevice = device;
             // I think the below line should register a callback rather than being set like this.. anyhow
@@ -128,7 +128,10 @@ angular.module('chunky')
       // Handle midi messages
       onMidiMessage: {
         value: function(e) {
-          console.log(e); // on midi input throw some shit out to the console.
+          var note = Chunky.midiToNoteObj(e.data[1]);
+
+          angular.extend(note, {velocity: e.data[2]});
+
           switch (e.data[0]) {
             // Note on
             case 144:
@@ -140,21 +143,26 @@ angular.module('chunky')
             case 150:
             case 151:
             case 152:
-            case 153:
             case 154:
             case 155:
             case 156:
             case 157:
             case 158:
             case 159:
+            // channel 10 should really be missed as is generally drums channel 153
+            case 153:
               // play midi note provide a note number and velocity
               if (e.data[2] != 0) {
-                console.log('playing midi note');
+                $rootScope.$apply(function() {
+                  $rootScope.$broadcast('midi::play', note);
+                });
               } else {
-                console.log('stopping midi note');
+                $rootScope.$apply(function() {
+                  $rootScope.$broadcast('midi::stop', note);
+                });
               }
               //this.playMidiNote(e.data[1], e.data[2]);
-              break;
+            break;
             // Turn event note number off
             case 128: 
             case 129: 
@@ -172,16 +180,12 @@ angular.module('chunky')
             case 141: 
             case 142: 
             case 143: 
-              console.log('stopping midi note');
-              //this.stopMidiNote(e.data[1]);
-              break;
+              $rootScope.$apply(function() {
+                $rootScope.$broadcast('midi::stop', note);
+              });
+            break;
           }
           
-        }
-      },
-      playMidiNote: {
-        value: function(note, vel) {
-          this.playNote(note, this.noteToFrequency(note), vel);
         }
       },
       stopMidiNote: {
@@ -192,6 +196,7 @@ angular.module('chunky')
       // play a note based on frequency, note is stored for use as a key
       playNote: {
         value: function(note, freq, vel) {
+          console.log('starting: ',note, freq, vel);
           var i,
               params,
               now = this.ctx.currentTime;
@@ -237,6 +242,7 @@ angular.module('chunky')
       // stop note from playing
       stopNote: {
         value: function(note, freq) {
+          console.log('stoping: ',note, freq)
           var i,
               now = this.ctx.currentTime;
 
@@ -462,6 +468,23 @@ angular.module('chunky')
       return Object.keys(obj).length === 0;
     };
 
+    Chunky.midiToNoteObj = function(midi) {
+      var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+      var baseA = 440;
+      var result = -1;
+
+      if (midi >= 0 && midi <= 128) {
+        var name = '';
+
+        result = {
+          note: notes[midi % 12] + ((midi - 12) / 12 >> 0),
+          frequency: baseA * Math.pow(2, (midi - 69) / 12)
+        };
+      }
+      return result;
+    };
+
+    
     // Create a chunky singleton service as it will only be required and newable once.
     // Maybe I should put object into factory and instantiate the object in this service..
     return new Chunky(audioCtx);

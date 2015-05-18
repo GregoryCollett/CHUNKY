@@ -35,6 +35,14 @@ angular.module('chunky')
 	    	console.log('MIDI support not available');
 	    }
 
+	    $scope.$on('midi::play', function(e, d) {
+	    	$scope.chunky.playNote(d.note, d.frequency, d.velocity);
+	    });
+
+	    $scope.$on('midi::stop', function(e, d) {
+	    	$scope.chunky.stopNote(d.note, d.frequency);
+	    })
+
 	    // Setup Keyboard Callbacks
 	    $scope.keyboard = {
 	    	visible: false,
