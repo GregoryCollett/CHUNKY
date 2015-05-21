@@ -41,7 +41,7 @@ angular.module('chunky')
 
 	    $scope.$on('midi::stop', function(e, d) {
 	    	$scope.chunky.stopNote(d.note, d.frequency);
-	    })
+	    });
 
 	    // Setup Keyboard Callbacks
 	    $scope.keyboard = {

@@ -64,7 +64,7 @@ angular.module('chunky')
       // setup master gain
       this.master = this.ctx.createGain();
       
-      // setup final equalizer
+      // setup final equalizer (3band eq + bass boosting)
       this.equalizer = new Equalizer(this.ctx);
       
       // create an analyser to be used by oscilloscope/s
@@ -152,7 +152,7 @@ angular.module('chunky')
             // channel 10 should really be missed as is generally drums channel 153
             case 153:
               // play midi note provide a note number and velocity
-              if (e.data[2] != 0) {
+              if (e.data[2] !== 0) {
                 $rootScope.$apply(function() {
                   $rootScope.$broadcast('midi::play', note);
                 });
@@ -196,7 +196,6 @@ angular.module('chunky')
       // play a note based on frequency, note is stored for use as a key
       playNote: {
         value: function(note, freq, vel) {
-          console.log('starting: ',note, freq, vel);
           var i,
               params,
               now = this.ctx.currentTime;
@@ -242,7 +241,6 @@ angular.module('chunky')
       // stop note from playing
       stopNote: {
         value: function(note, freq) {
-          console.log('stoping: ',note, freq)
           var i,
               now = this.ctx.currentTime;
 
