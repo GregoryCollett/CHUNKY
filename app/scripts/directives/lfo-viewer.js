@@ -20,7 +20,7 @@ angular.module('chunky')
 					// lfo specific variables
 					phase = scope.phase || '',
 					amplitude = scope.amplitude || '',
-					frequency = scope.frequency || ''
+					frequency = scope.frequency || '';
 
 					// set some basic styling for the canvas element
 					cvs.css('background-color', 'rgba(9,12,21,0.6)')

@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+* Chunky OSC (Oscillator)
+* Use: an oscillator is the primary sound generator
+* Thoughts and Ideas:
+* Things that need tweaks: All oscillator parameters need slight tweaking.
+* Once the web audio worker api is released it will make our life alot easier
+* We will also be able to run more advanced computations without affecting the browser window.
+*/
 angular.module('chunky')
   .factory('Oscillator', function(FrequencyModulator) {
     var isEmpty = function(obj) {
@@ -18,22 +26,22 @@ angular.module('chunky')
       this.controlNode = ctx.createGain();
       this.node = this.ctx.createGain();
       this.output = ctx.createGain();
-      
+
       this.frequency = cfg.frequency || 55;
       this.octave = cfg.octave || 2;
       this.fine = cfg.detune || 0;
       this.shape = cfg.shape || 'sine';
-      
+
       this.controlNode.gain.value = 0.5;
       this.node.gain.value = 0;
       this.output.gain.value = 0;
-      
+
       this.controlNode.connect(this.node);
       this.node.connect(this.output);
-      
+
       this._enabled = false;
     };
-    
+
     Oscillator.prototype = Object.create(null, {
       connect: {
         value: function(target) {
@@ -54,8 +62,10 @@ angular.module('chunky')
       start: {
         value: function(cfg) {
           this.frequency = cfg.frequency;
-          
+
           this._fm.frequency = this.frequency * 2;
+          // each oscillator started must also include a FrequencyModulator
+          // As per chunky design... Maybe we could abstract this more?????
           var fm = new FrequencyModulator(this.ctx, this._fm);
           var osc = this.ctx.createOscillator();
 
@@ -72,6 +82,8 @@ angular.module('chunky')
 
           this.voices[cfg.note] = osc;
 
+          // if glide is enabled and there is a last frequency
+          // then make that mother fucker GLIDEEEEEEEEE
           if (cfg.glide && this._lastFrequency) {
             osc.frequency.setValueAtTime(this._lastFrequency, cfg.now);
             osc.fm.modulator.frequency.setValueAtTime(this._lastFrequency * 2, cfg.now);
@@ -98,7 +110,6 @@ angular.module('chunky')
           return this;
         }
       },
-      // this method should change to make changes directly to the generator
       shape: {
         enumerable: true,
         get: function() {
@@ -220,6 +231,6 @@ angular.module('chunky')
         }
       }
     });
-  
+
     return Oscillator;
   });

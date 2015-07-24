@@ -1,10 +1,16 @@
 'use strict';
 
 /*
-** Chunky LFO (Low Frequency Oscillator)
-** Use: Used to modulate a web audio parameter.
-** Thoughts: How can we improve this module>>
-** Currently their is some crazy circular reference which I want to get rid of....
+* Chunky LFO (Low Frequency Oscillator)
+* Use: Used to modulate a web audio parameter.
+* Thoughts: How can we improve this module>>
+* Currently their is some crazy circular reference which I want to get rid of....
+* I would like to add an experimental envelope to the lfo..
+* Why would you add an envelope to an LFO?
+* Weel, depending on the parameter you assign it to new sounds can be generated
+* A prime example of this would be to increase the lfo amount as the sound is held
+* OR you could set the rate based on how long the item is held.......
+* In short.... It is essential that I implement envelope on LFO;
 */
 angular.module('chunky')
   .factory('LFO', function(Oscillator) {
@@ -18,10 +24,10 @@ angular.module('chunky')
       this.lfo.frequency.value = cfg.frequency || this.params.frequency.defaultValue;
       this.output = ctx.createGain();
       this.output.gain.value = cfg.gain || this.params.gain.defaultValue;
-      
+
       this.lfo.connect(this.output);
     };
-    
+
     LFO.prototype = Object.create(null, {
       rates: {
         value : {
@@ -55,6 +61,13 @@ angular.module('chunky')
             max: 100,
             defaultValue: 20,
             type: 'float'
+          },
+          shape: {
+            type: 'int',
+            name: 'wave-shape',
+            label: 'WS',
+            min: 1,
+            max: 3
           }
         }
       },
@@ -119,6 +132,15 @@ angular.module('chunky')
           this.output.gain.setValueAtTime(gain, 0);
         }
       },
+      shape: {
+        enumerable: true,
+        get: function() {
+          return this._shape;
+        },
+        set: function(shape) {
+          this._shape = shape;
+        }
+      },
       cfg: {
         get: function() {
           return {
@@ -128,10 +150,11 @@ angular.module('chunky')
         },
         set: function(cfg) {
           this.frequency = cfg.frequency || this.params.frequency.defaultValue;
+          this.shape = cfg.shape || this.params.shape.defaultValue;
           this.gain = cfg.amount || this.params.gain.defaultValue;
         }
       }
     });
-    
+
     return LFO;
   });

@@ -5,16 +5,16 @@ angular.module('chunky')
     $window,
     $rootScope,
     localStorageService,
-    audioCtx, 
-    Oscillator, 
-    Filter, 
-    Envelope, 
-    Distortion, 
-    Reverb, 
-    LFO, 
-    Noise, 
-    CombFilter, 
-    Patches, 
+    audioCtx,
+    Oscillator,
+    Filter,
+    Envelope,
+    Distortion,
+    Reverb,
+    LFO,
+    Noise,
+    CombFilter,
+    Patches,
     BitCrusher,
     Equalizer) {
     var Chunky = function Chunky(ctx) {
@@ -39,38 +39,38 @@ angular.module('chunky')
 
       // setup noise oscillator
       this.noise = new Noise(this.ctx);
-      
+
       // setup filters
       this.vcf = new Filter(this.ctx, {type:'bandpass'});
       this.vcf2 = new Filter(this.ctx, {type:'highpass'});
-      
+
       // setup envelopes
       this.vcfEnvelope = new Envelope(this.ctx);
       this.vcaEnvelope = new Envelope(this.ctx);
       this.env1 = new Envelope(this.ctx);
       this.env2 = new Envelope(this.ctx);
-      
+
       // setup low frequency oscillators
       this.lfo1 = new LFO(this.ctx);
       this.lfo2 = new LFO(this.ctx);
-      
+
       // setup effects
       // setup distortion
       this.distortion = new Distortion(this.ctx);
-      
+
       // setup reverb
       this.reverb = new Reverb(this.ctx);
-      
+
       // setup master gain
       this.master = this.ctx.createGain();
-      
+
       // setup final equalizer (3band eq + bass boosting)
       this.equalizer = new Equalizer(this.ctx);
-      
+
       // create an analyser to be used by oscilloscope/s
       this.analyser = this.ctx.createAnalyser();
 
-      // make life easier
+      // make my life easier
       this.oscs = [this.osc1, this.osc2, this.osc3, this.noise];
       this.filters = [this.vcf, this.vcf2];
       this.envelopes = [this.vcfEnvelope, this.vcaEnvelope, this.env1, this.env2];
@@ -84,12 +84,18 @@ angular.module('chunky')
 
       // Synth Routing (make this dynamic in the future) :D
       // in future version we will setup routing based on users config :D
-      for (var i = 0; i < this.oscs.length; i++) {
+      var i;
+
+      for (i = 0; i < this.oscs.length; i++) {
         this.oscs[i].connect(this.vcf.input);
         this.oscs[i].connect(this.vcf2.input);
       }
-      this.vcf.connect(this.distortion.input);
-      this.vcf2.connect(this.distortion.input);
+
+      for (i = 0; i < this.filters.length; i++) {
+        this.filters[i].connect(this.distortion.input);
+      }
+
+      // chain the effects... this will all change once I implement/test dynamic routing
       this.distortion.connect(this.reverb);
       this.reverb.connect(this.master);
       this.master.connect(this.equalizer.input);
@@ -102,15 +108,15 @@ angular.module('chunky')
 
       // connect filter two to vcf envelope
       this.vcfEnvelope.connect(this.vcf2, ['_filter','frequency']);
-      
+
       // connect amplifier to vca envelope
       this.vcaEnvelope.connect(this.master, 'gain', {range:[0, 2]});
-      
+
       // connect lfo to filter 1 & 2...
       this.lfo1.connect(this.vcf._filter.frequency);
       this.lfo1.connect(this.vcf2._filter.frequency);
     };
-    
+
     Chunky.prototype = Object.create(null, {
       controlDevice: {
         enumberable: true,
@@ -126,6 +132,7 @@ angular.module('chunky')
         }
       },
       // Handle midi messages
+      // should send this into a dedicated service
       onMidiMessage: {
         value: function(e) {
           var note = Chunky.midiToNoteObj(e.data[1]);
@@ -164,28 +171,28 @@ angular.module('chunky')
               //this.playMidiNote(e.data[1], e.data[2]);
             break;
             // Turn event note number off
-            case 128: 
-            case 129: 
-            case 130: 
-            case 131: 
-            case 132: 
-            case 133: 
-            case 134: 
-            case 135: 
-            case 136: 
-            case 137: 
-            case 138: 
-            case 139: 
-            case 140: 
-            case 141: 
-            case 142: 
-            case 143: 
+            case 128:
+            case 129:
+            case 130:
+            case 131:
+            case 132:
+            case 133:
+            case 134:
+            case 135:
+            case 136:
+            case 137:
+            case 138:
+            case 139:
+            case 140:
+            case 141:
+            case 142:
+            case 143:
               $rootScope.$apply(function() {
                 $rootScope.$broadcast('midi::stop', note);
               });
             break;
           }
-          
+
         }
       },
       stopMidiNote: {
@@ -246,9 +253,6 @@ angular.module('chunky')
 
           // if this voices contains the current note
           if (this._voices[note]) {
-            // delete the note from the voices object
-            delete this._voices[note];
-
             // for each envelope
             for (i = 0; i < this.envelopes.length; i++) {
               // if more than one voice
@@ -273,6 +277,9 @@ angular.module('chunky')
                 }
               }
             }
+
+            // delete the note from the voices object
+            delete this._voices[note];
           }
         }
       },
@@ -317,7 +324,7 @@ angular.module('chunky')
 
           // reinit each envelope with new cfg
     			for (i = 0; i < this.envelopes.length; i++) {
-    				this.envelopes[i].cfg = patch.envelopes[i];				
+    				this.envelopes[i].cfg = patch.envelopes[i];
     			}
 
           // reinit each lfo with new cfg
@@ -460,7 +467,7 @@ angular.module('chunky')
         }
       }
     });
-  
+
     // I bet there is an angular function that can do this
     Chunky.isEmpty = function(obj) {
       return Object.keys(obj).length === 0;
@@ -482,7 +489,7 @@ angular.module('chunky')
       return result;
     };
 
-    
+
     // Create a chunky singleton service as it will only be required and newable once.
     // Maybe I should put object into factory and instantiate the object in this service..
     return new Chunky(audioCtx);

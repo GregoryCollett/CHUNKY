@@ -1,5 +1,10 @@
 'use strict';
 
+// What the fuck is a CAParam?
+
+// A CAParam is an automatable web audio parameter giving more flexible control
+// to the default audioParam provided by the web audio context - Web audio API.
+
 angular.module('chunky')
 	.factory('CAParam', function() {
 		var CAParam = function(cfg) {
@@ -34,7 +39,7 @@ angular.module('chunky')
 			this.isAutomation = false;
 		};
 
-		AudioParam.prototype = Object.create(null, {
+		CAParam.prototype = Object.create(null, {
 			// Default meta for AudoParam object
 			meta: {
 				value: {
