@@ -14,4 +14,16 @@ angular.module('chunky', ['ngRoute','ui.bootstrap', 'LocalStorageModule'])
 		// Setup local storage configuration
 		localStorageServiceProvider
 			.setPrefix('CHUNKY');
+	})
+	.constant('WAVE_SHAPES', {
+		SINE: 'sine',
+		SQR: 'square',
+		TRI: 'triangle',
+		SAW: 'saw'
+	})
+	.constant('FILTER_TYPES', {
+		LP: 'lowpass',
+		BP: 'bandpass',
+		HP: 'highpass',
+		NT: 'notch'
 	});
