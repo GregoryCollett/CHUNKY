@@ -15,7 +15,7 @@
 									</select>
 								</div>
 								<div class="col-md-4">
-									<button class="btn btn-save" 
+									<button class="btn btn-save"
 										data-ng-click="chunky.savePatch()">
 										SAVE
 									</button>
@@ -32,16 +32,16 @@
 								</div>
 								<div class="col-md-4 tempo-control">
 									<label>TEMPO: </label>
-									<input type="number" 
-										data-ng-model="chunky.tempo" 
-										min="30" 
+									<input type="number"
+										data-ng-model="chunky.tempo"
+										min="30"
 										max="220"/>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
-						
+
 					</div>
 				</div>
 			</div>
@@ -78,29 +78,29 @@
 					<div class="controls">
 						<div class="control-pitch">
 							<p class="label">OCT & TUNE</p>
-							<input type="number" 
-								min="0" 
-								max="6" 
-								data-ng-model="osc.octave" 
+							<input type="number"
+								min="0"
+								max="6"
+								data-ng-model="osc.octave"
 								class="oscillator-octave"/>
-							<input type="number" 
-								min="-64.00" 
-								step="1" 
-								max="64" 
-								data-ng-model="osc.fine" 
+							<input type="number"
+								min="-64.00"
+								step="1"
+								max="64"
+								data-ng-model="osc.fine"
 								class="oscillator-detune"/>
 						</div>
-						<knob value="osc.gain" 
+						<knob value="osc.gain"
 							label="GAIN"
 							class="knob-default"
 							options="{min:0, max:1, scale:0.01, class:'knob-default', speed:0.1}">
 						</knob>
-						<knob value="osc.fmGain" 
+						<knob value="osc.fmGain"
 							label="FM GN"
 							class="knob-default knob-small"
 							options="{min:-1000, max:1000, scale:0.5, class:'knob-default'}">
 						</knob>
-						<!-- <knob value="osc.fmFrequency" 
+						<!-- <knob value="osc.fmFrequency"
 							label="FM FQ"
 							class="knob-default knob-small"
 							options="{min:0, max:1000, scale:1, class:'knob-default'}">
@@ -118,7 +118,7 @@
 				</div>
 				<div class="controls">
 					<div class="col-md-6">
-						
+
 					</div>
 					<div class="col-md-6">
 						<table class="table chunky-table">
@@ -156,7 +156,7 @@
 					</label>
 					<select data-ng-model="chunky.noise.generator">
 						<option value="white">WHITE</option>
-						<option value="pink">PINK</option>          
+						<option value="pink">PINK</option>
 						<option value="brown">BROWN</option>
 					</select>
 				</div>
@@ -178,11 +178,11 @@
 							<div class="filter-mix">
 								<p class="label">MIX</p>
 								<div class="controls">
-									<input type="range" 
-										class="slider" 
-										orient="vertical" 
-										min="0" max="1" 
-										step="0.01" 
+									<input type="range"
+										class="slider"
+										orient="vertical"
+										min="0" max="1"
+										step="0.01"
 										data-ng-model="chunky.vcfMix" />
 								</div>
 								<div class="spacer-vertical"></div>
@@ -197,28 +197,28 @@
 										</label>
 										<select data-ng-model="filter.type">
 											<option value="lowpass">LP</option>
-											<option value="bandpass">BP</option>          
-											<option value="highpass">HP</option>          
+											<option value="bandpass">BP</option>
+											<option value="highpass">HP</option>
 											<option value="notch">NTC</option>
 										</select>
 									</div>
 									<div class="controls">
-							            <knob value="filter.frequency" 
+							            <knob value="filter.frequency"
 							            	min="filter.meta.params.frequency.min"
 							            	max="filter.meta.params.frequency.max"
 							            	scale="0.1"
 							            	speed="0.5"
 							            	class="knob-default"
-							            	options="{min:0, max:1, scale: 0.001, class:'knob-default', speed: 0.1}" 
+							            	options="{min:0, max:1, scale: 0.001, class:'knob-default', speed: 0.1}"
 							            	label="CUT">
 							            </knob>
-							            <knob value="filter.resonance" 
+							            <knob value="filter.resonance"
 							            	min="filter.meta.params.resonance.min"
 							            	max="filter.meta.params.resonance.max"
 							            	scale="0.1"
 							            	speed="1"
 							            	class="knob-default"
-							            	options="{min:0, max:1, class:'knob-default', speed: 0., scale: 0.001}" 
+							            	options="{min:0, max:1, class:'knob-default', speed: 0., scale: 0.001}"
 							            	label="RES">
 							            </knob>
 							        </div>
@@ -226,7 +226,7 @@
 							</div>
 						</div>
 					</div>
-					<!-- OSCILLOSCOPE 
+					<!-- OSCILLOSCOPE
 					<div class="module" style="padding:0; border-radius:5px;">
 						<oscilloscope analyser="chunky.analyser" width="10" height="87" style="border-radius:3px;"></oscilloscope>
 					</div>-->
@@ -247,7 +247,7 @@
 								</select>
 							</div>
 							<div class="controls">
-								<knob value="chunky.distortion.preBand" 
+								<knob value="chunky.distortion.preBand"
 								min="chunky.distortion.meta.params.preBand.min"
 								max="chunky.distortion.meta.params.preBand.max"
 								step="0.01"
@@ -255,7 +255,7 @@
 								label="BND"
 									options="{}"
 								class="knob-default"></knob>
-								<knob value="chunky.distortion.colour" 
+								<knob value="chunky.distortion.colour"
 								min="chunky.distortion.meta.params.colour.min"
 								max="chunky.distortion.meta.params.colour.max"
 								speed="1"
@@ -263,7 +263,7 @@
 								label="COL"
 									options="{}"
 								class="knob-default"></knob>
-								<knob value="chunky.distortion.drive" 
+								<knob value="chunky.distortion.drive"
 								min="chunky.distortion.meta.params.drive.min"
 								max="chunky.distortion.meta.params.drive.max"
 								speed="1"
@@ -275,7 +275,7 @@
 								min="chunky.distortion.meta.params.postCut.min"
 								max="chunky.distortion.meta.params.postCut.max"
 								speed="1"
-								step="1" 
+								step="1"
 									options="{}"
 								label="CUT"
 								class="knob-default"></knob>
@@ -323,12 +323,12 @@
 								<p>AMP</p>
 							</div>
 							<div class="controls">
-								<knob value="" 
-									label="PAN" 
+								<knob value=""
+									label="PAN"
 									class="knob-default"
 									options="{min:0, max:1, scale: 0.01, speed:0.1}"></knob>
-								<knob value="chunky.masterGain" 
-									label="MASTER" 
+								<knob value="chunky.masterGain"
+									label="MASTER"
 									class="knob-default"
 									options="{min:0, max:1.2, scale: 0.01, speed:0.1}"></knob>
 							</div>
@@ -386,29 +386,29 @@
 										<div class="row">
 											<envelope params="chunky.vcfEnvelope" inverted="chunky.vcfEnvelope.inverted" width="515" height="130"></envelope>
 										</div>
-										<div class="row">								
+										<div class="row">
 											<div class="param">
-												<knob label="ATK" 
+												<knob label="ATK"
 													class="knob-classic"
-													value="chunky.vcfEnvelope.attack" 
+													value="chunky.vcfEnvelope.attack"
 													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
-												<knob label="DEC" 
+												<knob label="DEC"
 													class="knob-classic"
-													value="chunky.vcfEnvelope.decay" 
+													value="chunky.vcfEnvelope.decay"
 													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
-												<knob label="SUS" 
+												<knob label="SUS"
 													class="knob-classic"
-													value="chunky.vcfEnvelope.sustain" 
+													value="chunky.vcfEnvelope.sustain"
 													options="{min:0.001, max:100, step: 0.1, speed: 0.1, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
-												<knob label="REL" 
+												<knob label="REL"
 													class="knob-classic"
-													value="chunky.vcfEnvelope.release" 
+													value="chunky.vcfEnvelope.release"
 													options="{min:0.001, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
@@ -425,37 +425,37 @@
 											</div>
 										</div>
 									</tab>
-									<tab heading="VCA ENV" class="env">	
+									<tab heading="VCA ENV" class="env">
 											<div class="row">
-												<envelope params="chunky.vcaEnvelope" 
-													width="515" 
-													height="130" 
+												<envelope params="chunky.vcaEnvelope"
+													width="515"
+													height="130"
 													inverted="chunky.vcaEnvelope.inverted">
 												</envelope>
 											</div>
-										<div class="row">							
+										<div class="row">
 											<div class="param">
-												<knob label="ATK" 
+												<knob label="ATK"
 													class="knob-classic"
-													value="chunky.vcaEnvelope.attack" 
+													value="chunky.vcaEnvelope.attack"
 													options="{min:0, max:50000, step: 5, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
 												<knob label="DEC"
-													class="knob-classic" 
-													value="chunky.vcaEnvelope.decay" 
+													class="knob-classic"
+													value="chunky.vcaEnvelope.decay"
 													options="{min:0.1, max:50000, step: 5, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
-												<knob label="SUS" 
+												<knob label="SUS"
 													class="knob-classic"
-													value="chunky.vcaEnvelope.sustain" 
+													value="chunky.vcaEnvelope.sustain"
 													options="{min:0.001, max:100, step: 0.1, speed: 0.1, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
 												<knob label="REL"
-													class="knob-classic" 
-													value="chunky.vcaEnvelope.release" 
+													class="knob-classic"
+													value="chunky.vcaEnvelope.release"
 													options="{min:0.001, max:50000, step: 5, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
@@ -472,32 +472,32 @@
 											</div>
 										</div>
 									</tab>
-									<tab heading="ENV 1" class="env">	
+									<tab heading="ENV 1" class="env">
 										<div class="row">
 											<envelope params="chunky.env1" width="515" height="130"></envelope>
 										</div>
-										<div class="row">								
+										<div class="row">
 											<div class="param">
 												<knob label="ATK"
-													class="knob-classic" 
-													value="chunky.env1.attack" 
-													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
-											</div>
-											<div class="param">
-												<knob label="DEC" 
 													class="knob-classic"
-													value="chunky.env1.decay" 
+													value="chunky.env1.attack"
 													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
-												<knob label="SUS" 
-													value="chunky.env1.sustain" 
+												<knob label="DEC"
+													class="knob-classic"
+													value="chunky.env1.decay"
+													options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
+											</div>
+											<div class="param">
+												<knob label="SUS"
+													value="chunky.env1.sustain"
 													class="knob-classic"
 													options="{min:0.001, max:100, step: 0.1, speed: 0.1, class: 'knob-classic'}"></knob>
 											</div>
 											<div class="param">
-												<knob label="REL" 
-													value="chunky.env1.release" 
+												<knob label="REL"
+													value="chunky.env1.release"
 													class="knob-classic"
 													options="{min:0.001, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
@@ -519,7 +519,7 @@
 										<div class="row">
 											<envelope params="chunky.env2" width="515" height="130"></envelope>
 										</div>
-										<div class="row">								
+										<div class="row">
 											<div class="param">
 												<knob label="ATK" value="chunky.env2.attack" class="knob-classic" o options="{min:0.1, max:50000, step: 0.1, speed: 3, class: 'knob-classic'}"></knob>
 											</div>
@@ -553,8 +553,8 @@
 										<div class="row">
 											<div class="param">
 												<p class="label">SYNC</p>
-												<input data-ng-model="chunky.lfo1.sync" 
-													class="enabled retrig" 
+												<input data-ng-model="chunky.lfo1.sync"
+													class="enabled retrig"
 													type="checkbox"/>
 											</div>
 											<div class="param" data-ng-if="!chunky.lfo1.sync">
@@ -593,16 +593,16 @@
 												<p class="label">
 													POLY
 												</p>
-													<input data-ng-model="chunky.polyphony" 
-														class="enabled retrig" 
+													<input data-ng-model="chunky.polyphony"
+														class="enabled retrig"
 														type="checkbox"/>
 											</div>
 											<div class="param">
 												<p class="label">
 													GLIDE
 												</p>
-													<input data-ng-model="chunky.glide" 
-														class="enabled retrig" 
+													<input data-ng-model="chunky.glide"
+														class="enabled retrig"
 														type="checkbox"/>
 											</div>
 											<div class="param">

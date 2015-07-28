@@ -16,7 +16,8 @@ angular.module('chunky')
     CombFilter,
     Patches,
     BitCrusher,
-    Equalizer) {
+    Equalizer,
+    NodeRouter) {
     var Chunky = function Chunky(ctx) {
       var self = this;
       // Store the audio context
@@ -87,12 +88,14 @@ angular.module('chunky')
       var i;
 
       for (i = 0; i < this.oscs.length; i++) {
-        this.oscs[i].connect(this.vcf.input);
-        this.oscs[i].connect(this.vcf2.input);
+        NodeRouter.route({from: this.oscs[i], to: [this.vcf, this.vcf2]});
+        // this.oscs[i].connect(this.vcf.input);
+        // this.oscs[i].connect(this.vcf2.input);
       }
 
       for (i = 0; i < this.filters.length; i++) {
-        this.filters[i].connect(this.distortion.input);
+        NodeRouter.route({from: this.filters[i], to: this.distortion})
+        //this.filters[i].connect(this.distortion.input);
       }
 
       // chain the effects... this will all change once I implement/test dynamic routing

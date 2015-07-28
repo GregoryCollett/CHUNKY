@@ -23,34 +23,37 @@ angular.module('chunky')
 		};
 
 		NodeRouter.prototype = Object.create(null, {
-			register: {
+			route: {
 				value: function(route) {
+					console.log(route);
+
 					if (!route && route.from && route.to) {
 						console.log('A route must consist of a from and a to');
 					}
 
-					this.routables.push(new Route(route.from, route.to));
+					this.routes.push(new Route(route.from, route.to));
 
 					this.reconnect();
 				}
 			},
 			reconnect: {
 				value: function() {
-					var route, destination;
+					var route, destination, i;
 					// loop through all possible routable items
-					for (route in this.routeables) {
+					for (i = 0; i < this.routes.length; i++) {
+					//for (route in this.routeables) {
+						var route = this.routes[i];
 						// if route to has more than one TO
 						if (route.to instanceof Array) {
 							// loop through the TO's
 							for (destination in route.to) {
 								// connect the to
-								route.from.connect(destination);
+								route.from.connect(route.to[destination].input ? route.to[destination].input : route.to[destination]);
 							}
 						// else we assume this is a standard audio Node
 						// We should probably add some validation of that...
 						} else {
-
-							route.from.connect(route.to);
+							route.from.connect(route.to.input ? route.to.input : route.to);
 						}
 					}
 				}

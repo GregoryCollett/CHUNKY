@@ -15,7 +15,7 @@ angular.module('chunky')
 				var total = 0,
 					length = buffer.length,
 					i;
-  
+
 				for (i = 0; i < length; i++) {
 					total += buffer[i] * buffer[i];
 				}
@@ -42,6 +42,12 @@ angular.module('chunky')
 				}
 
 				return result;
+			},
+			noteToFreq: function(note) {
+
+			},
+			freqToNote: function(freq) {
+				
 			}
 		};
 	});

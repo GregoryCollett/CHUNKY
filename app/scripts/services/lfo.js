@@ -17,12 +17,18 @@ angular.module('chunky')
     var LFO = function LFO(ctx, cfg) {
       cfg = cfg || {};
 
+      // There seems to be a lot of circular dependencies relying on the audio ctx
+      // The best way I can think of stopping this is to inject the ctx in to each
+      // service/factory that requires it... does this stop the problem?????????
       this.ctx = ctx;
 
       this.lfo = this.ctx.createOscillator();
+      this.lfo.type = 'triangle';
+      // this is wrong, the oscillator should only start on trigger! and should
+      // reset on trigger unless specified otherwise... MUST FIX
       this.lfo.start(0);
       this.lfo.frequency.value = cfg.frequency || this.params.frequency.defaultValue;
-      this.output = ctx.createGain();
+      this.output = this.ctx.createGain();
       this.output.gain.value = cfg.gain || this.params.gain.defaultValue;
 
       this.lfo.connect(this.output);
@@ -101,6 +107,9 @@ angular.module('chunky')
           }
         }
       },
+      // this needs to be resolved... some crazy calculation needs to be done here
+      // to determine the frequency of the oscillator based on the tempo set
+      // in chunky (which we bind to the audio ctx for ease of getting and setting)
       syncFrequency: {
         value: function(rate) {
           var beatsPerMinute = this.ctx.tempo,
