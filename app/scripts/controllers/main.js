@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('chunky')
-	.controller('chunkyController', function($scope, chunkySynth, MidiDevices) {
+	.controller('chunkyController', function($scope, chunkySynth, MidiDevices, NodeRouter) {
 	    // Set synth to scope so we can bind params and make noises :D
 	    $scope.chunky = chunkySynth;
-
+			$scope.routables = NodeRouter.routables;
 	    // Setup midi support if available in browser
 	    // We can move this into th chunky service and make th controller light weight again
 	    $scope.midiDevices = MidiDevices;
@@ -21,9 +21,9 @@ angular.module('chunky')
 	    					input = null;
 
 	    					// iterate through the devices
-	                        for (input = inputs.next(); input && !input.done; input = inputs.next()) {
-	                            $scope.midiDevices.list.push(input.value);
-	                        }
+                for (input = inputs.next(); input && !input.done; input = inputs.next()) {
+                    $scope.midiDevices.list.push(input.value);
+                }
 
 	    					console.log('Midi Devices found');
 	    				} else {

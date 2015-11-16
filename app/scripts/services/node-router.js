@@ -22,18 +22,49 @@ angular.module('chunky')
 			this.output = output;
 		};
 
-		NodeRouter.prototype = Object.create(null, {
+		NodeRouter.prototype = Object.create(Object, {
+			register: {
+				value: function(routables) {
+					if (routables instanceof Array) {
+						for (var routable in routables) {
+							if (!this.isRoutable(routable)) {
+								throw new Error('A routable must consist of a name and a node');
+							}
+							this.routables[routable.name] = routable.node;
+						}
+					} else {
+						if (!this.isRoutable(routables)) {
+							throw new Error('A routable must consist of a name and a node');
+						}
+						this.routables[routables.name] = routables.node;
+					}
+					return this;
+				}
+			},
+			isRoutable: {
+				value: function(routable) {
+					if (!routable.name || !routable.node) {
+						return false;
+					}
+
+					return true;
+				}
+			},
 			route: {
 				value: function(route) {
-					console.log(route);
+					if (route instanceof Array) {
+
+					}
 
 					if (!route && route.from && route.to) {
-						console.log('A route must consist of a from and a to');
+						throw new Error('A route must consist of a from and a to');
 					}
 
 					this.routes.push(new Route(route.from, route.to));
 
 					this.reconnect();
+
+					return this;
 				}
 			},
 			reconnect: {
@@ -42,18 +73,19 @@ angular.module('chunky')
 					// loop through all possible routable items
 					for (i = 0; i < this.routes.length; i++) {
 					//for (route in this.routeables) {
-						var route = this.routes[i];
+						route = this.routes[i];
 						// if route to has more than one TO
 						if (route.to instanceof Array) {
 							// loop through the TO's
 							for (destination in route.to) {
 								// connect the to
-								route.from.connect(route.to[destination].input ? route.to[destination].input : route.to[destination]);
+								this.routables[route.from].connect(route.to[destination].input ? route.to[destination].input : route.to[destination]);
 							}
 						// else we assume this is a standard audio Node
 						// We should probably add some validation of that...
 						} else {
-							route.from.connect(route.to.input ? route.to.input : route.to);
+							//console.log(this.routables[route.from]);
+							this.routables[route.from].connect(route.to.input ? route.to.input : route.to);
 						}
 					}
 				}

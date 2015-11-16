@@ -9,6 +9,7 @@ angular.module('chunky')
 
 			this.input = this.ctx.createGain();
 			this.output = this.ctx.createGain();
+			this.modulator = new LFO();
 		};
 
 		Tremello.prototype = Object.create(null, {

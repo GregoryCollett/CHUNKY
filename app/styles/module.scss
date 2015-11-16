@@ -1,5 +1,5 @@
  @import "compass/css3/images";
- 
+
 input[type="checkbox"].enabled {
 	margin-top:3px;
 	margin-bottom: 4px;
@@ -16,7 +16,7 @@ input[type="checkbox"].enabled {
 	outline:none !important;
 	&:checked {
 		background: #87EAFF;
-		box-shadow: 
+		box-shadow:
 		0 0 3px #87EAFF;
 		outline:none !important;
 	}
@@ -120,6 +120,7 @@ input[type="checkbox"].enabled {
 				height: 25px;
 				float: left;
 				width: 60%;
+        text-align: right;
 			}
 		}
 	}

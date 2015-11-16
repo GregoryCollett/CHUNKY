@@ -10,7 +10,7 @@ angular.module('chunky')
         polyphonic: '=',
         startNote: '='
       },
-      link: function(scope, elem, attr) {
+      link: function(scope, elem) {
         // Setup qwerty hancock with some default values
         var keyboard = new QwertyHancock({
           id: elem.id,
@@ -19,11 +19,6 @@ angular.module('chunky')
           octaves: 2,
           startNote: scope.startNote || 'C1'
         });
-        
-        // is there an angular function that already does this?
-        var isEmpty = function(obj) {
-          return Object.keys(obj).length === 0;
-        };
 
         // setup
         var depressedKeys = {};

@@ -43,11 +43,11 @@ angular.module('chunky')
 
 				return result;
 			},
-			noteToFreq: function(note) {
-
-			},
-			freqToNote: function(freq) {
-				
-			}
+			// noteToFreq: function(note) {
+			//
+			// },
+			// freqToNote: function(freq) {
+			//
+			// }
 		};
 	});

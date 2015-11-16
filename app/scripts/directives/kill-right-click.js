@@ -4,7 +4,7 @@ angular.module('chunky')
 	.directive('killRightClick', function($document) {
 		return {
 			restrict: 'CA',
-			link: function(el) {
+			link: function() {
 				$document.on('contextmenu', function(e) {
 					e.preventDefault();
 				});

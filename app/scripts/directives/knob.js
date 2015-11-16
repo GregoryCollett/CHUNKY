@@ -5,7 +5,7 @@ angular.module('chunky')
 	return {
 		restrict: 'EA',
 		replace: true,
-		template: 
+		template:
 		'<div class="knob">' +
 			'<p data-ng-if="label" data-ng-bind="label" class="label"></p>' +
 			'<div class="knob-face">' +
@@ -28,8 +28,8 @@ angular.module('chunky')
 		},
 		link: function(scope, elem, attr) {
 			scope.options = scope.options || {};
-			
-			var defaults = {
+
+			var params = {
 				range: 270,
 				//class: scope.options.class || 'knob-default',
 				responsive: scope.options.responsive || false,
@@ -40,8 +40,7 @@ angular.module('chunky')
 				holdKey: false,
 				groupKey: false,
 			},
-			params = defaults,
-			startpos = params.range / 2,
+			startpos = params.max + ((scope.value || 0 / 100) * (params.min - params.max)),
 			container = elem,
 			face = elem.find('.knob-face'),
 			movingFace = face.find('.knob-moving-face'),
@@ -67,7 +66,7 @@ angular.module('chunky')
 
 			canvas
 				.css('position', 'absolute')
-				.css('top', 0)      
+				.css('top', 0)
 				.css('left', 0)
 				.css('width', 0)
 				.css('z-index', '0');
@@ -149,7 +148,7 @@ angular.module('chunky')
 					scope.value = parseFloat(val.toFixed(2));
 				});
 
-				posTracker = e.pageY || e.originalEvent.targetTouches[0].pageY;              
+				posTracker = e.pageY || e.originalEvent.targetTouches[0].pageY;
 				e.preventDefault();
 			}
 
@@ -157,7 +156,7 @@ angular.module('chunky')
 			function mouseUp(){
 				mouse.focus = false;
 				movingFace.data('md', false);
-			} 
+			}
 
 			movingFace.on('touchstart', function(e) {
 				preTurn(e);

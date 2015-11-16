@@ -5,7 +5,6 @@ angular.module('chunky')
 		return {
 			restrict: 'A',
 			link: function(scope, elem) {
-				console.log(elem);
 				if (elem.requestFullscreen) {
 				  elem.requestFullscreen();
 				} else if (elem.msRequestFullscreen) {

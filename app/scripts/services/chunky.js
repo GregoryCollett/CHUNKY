@@ -1,27 +1,27 @@
 'use strict';
 
 angular.module('chunky')
-  .service('chunkySynth', function(
-    $window,
-    $rootScope,
-    localStorageService,
-    audioCtx,
-    Oscillator,
-    Filter,
-    Envelope,
-    Distortion,
-    Reverb,
-    LFO,
-    Noise,
-    CombFilter,
-    Patches,
-    BitCrusher,
-    Equalizer,
-    NodeRouter) {
+.service('chunkySynth', function(
+  $window,
+  $rootScope,
+  localStorageService,
+  audioCtx,
+  Oscillator,
+  Filter,
+  Envelope,
+  Distortion,
+  Reverb,
+  LFO,
+  Noise,
+  CombFilter,
+  Patches,
+  BitCrusher,
+  Equalizer,
+  NodeRouter) {
     var Chunky = function Chunky(ctx) {
-      var self = this;
       // Store the audio context
       this.ctx = ctx;
+      this.nodeRouter = NodeRouter;
 
       // Load default patches
       this.patches = Patches;
@@ -55,7 +55,6 @@ angular.module('chunky')
       this.lfo1 = new LFO(this.ctx);
       this.lfo2 = new LFO(this.ctx);
 
-      // setup effects
       // setup distortion
       this.distortion = new Distortion(this.ctx);
 
@@ -85,16 +84,20 @@ angular.module('chunky')
 
       // Synth Routing (make this dynamic in the future) :D
       // in future version we will setup routing based on users config :D
-      var i;
+      var i, name;
 
       for (i = 0; i < this.oscs.length; i++) {
-        NodeRouter.route({from: this.oscs[i], to: [this.vcf, this.vcf2]});
+        name = (this.oscs[i] instanceof Noise) ? 'noise' : 'osc' + (i + 1);
+        NodeRouter.register({name: name, node: this.oscs[i]});
+        NodeRouter.route({from: name, to: [this.vcf, this.vcf2]});
         // this.oscs[i].connect(this.vcf.input);
         // this.oscs[i].connect(this.vcf2.input);
       }
 
       for (i = 0; i < this.filters.length; i++) {
-        NodeRouter.route({from: this.filters[i], to: this.distortion})
+        name = 'vcf' + (i + 1);
+        NodeRouter.register({name: name, node: this.filters[i]});
+        NodeRouter.route({from: name, to: this.distortion});
         //this.filters[i].connect(this.distortion.input);
       }
 
@@ -161,17 +164,17 @@ angular.module('chunky')
             case 159:
             // channel 10 should really be missed as is generally drums channel 153
             case 153:
-              // play midi note provide a note number and velocity
-              if (e.data[2] !== 0) {
-                $rootScope.$apply(function() {
-                  $rootScope.$broadcast('midi::play', note);
-                });
-              } else {
-                $rootScope.$apply(function() {
-                  $rootScope.$broadcast('midi::stop', note);
-                });
-              }
-              //this.playMidiNote(e.data[1], e.data[2]);
+            // play midi note provide a note number and velocity
+            if (e.data[2] !== 0) {
+              $rootScope.$apply(function() {
+                $rootScope.$broadcast('midi::play', note);
+              });
+            } else {
+              $rootScope.$apply(function() {
+                $rootScope.$broadcast('midi::stop', note);
+              });
+            }
+            //this.playMidiNote(e.data[1], e.data[2]);
             break;
             // Turn event note number off
             case 128:
@@ -190,9 +193,9 @@ angular.module('chunky')
             case 141:
             case 142:
             case 143:
-              $rootScope.$apply(function() {
-                $rootScope.$broadcast('midi::stop', note);
-              });
+            $rootScope.$apply(function() {
+              $rootScope.$broadcast('midi::stop', note);
+            });
             break;
           }
 
@@ -207,8 +210,8 @@ angular.module('chunky')
       playNote: {
         value: function(note, freq, vel) {
           var i,
-              params,
-              now = this.ctx.currentTime;
+          params,
+          now = this.ctx.currentTime;
 
           // add pressed note to voices;
           this._voices[note] = freq;
@@ -251,8 +254,8 @@ angular.module('chunky')
       // stop note from playing
       stopNote: {
         value: function(note, freq) {
-          var i,
-              now = this.ctx.currentTime;
+          var i;
+          // now = this.ctx.currentTime;
 
           // if this voices contains the current note
           if (this._voices[note]) {
@@ -288,58 +291,58 @@ angular.module('chunky')
       },
       // keeps track of the current patch in use
       currentPatch: {
-      	get: function() {
-      		return this._currentPatch;
-      	},
-      	set: function(patch) {
-      		this._currentPatch = patch;
-      		this.loadPatch(patch);
-      	}
+        get: function() {
+          return this._currentPatch;
+        },
+        set: function(patch) {
+          this._currentPatch = patch;
+          this.loadPatch(patch);
+        }
       },
       // loads a patch/maintains patch configuration throughout chunky
       loadPatch: {
         value: function(patch) {
-  			  var i ;
+          var i ;
           // reinit settings held in chunky
           this.polyphony = patch.polyphony;
           this._glide = patch.glide;
           this.masterGain = patch.master;
 
           // reinit each oscillator/noise generator with new cfg
-    			for (i = 0; i < this.oscs.length; i++) {
-    				if (this.oscs[i] instanceof Oscillator) {
-    				  this.oscs[i].cfg = patch.oscillators[i];
-    				} else {
-    				  patch.noise = this.oscs[i].cfg;
-    				}
-    			}
+          for (i = 0; i < this.oscs.length; i++) {
+            if (this.oscs[i] instanceof Oscillator) {
+              this.oscs[i].cfg = patch.oscillators[i];
+            } else {
+              patch.noise = this.oscs[i].cfg;
+            }
+          }
 
           // reinitialise noise with new cfg
-    			this.noise.cfg = patch.noise;
+          this.noise.cfg = patch.noise;
 
           // reinitialise vcf mix with new val
-    			this.vcfMix = patch.vcfMix;
+          this.vcfMix = patch.vcfMix;
 
           // reinitialise each filter with new cfg
-    			for (i = 0; i < this.filters.length; i++) {
-    				this.filters[i].cfg = patch.filters[i];
-    			}
+          for (i = 0; i < this.filters.length; i++) {
+            this.filters[i].cfg = patch.filters[i];
+          }
 
           // reinit each envelope with new cfg
-    			for (i = 0; i < this.envelopes.length; i++) {
-    				this.envelopes[i].cfg = patch.envelopes[i];
-    			}
+          for (i = 0; i < this.envelopes.length; i++) {
+            this.envelopes[i].cfg = patch.envelopes[i];
+          }
 
           // reinit each lfo with new cfg
-    			for (i = 0; i < this.lfos.length; i++) {
-    				this.lfos[i].cfg = patch.lfos[i];
-    			}
+          for (i = 0; i < this.lfos.length; i++) {
+            this.lfos[i].cfg = patch.lfos[i];
+          }
 
           // reinit distortion with new cfg
-    			this.distortion.cfg = patch.distortion;
+          this.distortion.cfg = patch.distortion;
 
           // reinit reverb with new cfg
-    			this.reverb.cfg = patch.reverb;
+          this.reverb.cfg = patch.reverb;
 
           // reinit equalizer with new cfg
           this.equalizer.cfg = patch.cfg;
@@ -360,7 +363,8 @@ angular.module('chunky')
             equalizer: this.equalizer.cfg,
             polyphony: this.polyphony,
             glide: this._glide,
-            master: this.masterGain
+            master: this.masterGain,
+            routes: this.nodeRouter.routes
           },
           i;
 
@@ -482,8 +486,6 @@ angular.module('chunky')
       var result = -1;
 
       if (midi >= 0 && midi <= 128) {
-        var name = '';
-
         result = {
           note: notes[midi % 12] + ((midi - 12) / 12 >> 0),
           frequency: baseA * Math.pow(2, (midi - 69) / 12)

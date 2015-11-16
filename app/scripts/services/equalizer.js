@@ -3,6 +3,8 @@
 angular.module('chunky')
 	.factory('Equalizer', function() {
 		var Equalizer = function Equalizer(ctx, cfg) {
+			cfg = cfg || {};
+			
 			this.ctx = ctx;
 			this.bands = [];
 
